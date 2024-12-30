@@ -9,7 +9,7 @@
 
         protected override Window CreateWindow(IActivationState? activationState)
         {
-            return new Window(new MainPage()) { Title = "PoE2FilterManager" };
+            return new Window(new MainPage()) { Title = "Path of Exile 2 Filter Manager" };
         }
     }
 }

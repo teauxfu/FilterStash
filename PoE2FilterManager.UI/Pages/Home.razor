@@ -1,5 +1,39 @@
 ﻿@page "/"
 
-<h1>Hello, world!</h1>
 
-Welcome to your new app.
+<h1>Path of Exile 2 Filter Manager</h1>
+
+<div>
+    <button @onclick=@(() => HandleOpenPoeFolder())>open PoE2 folder</button>
+    <button @onclick=@(() => HandleOpenConfigFile())>open manager config folder</button>
+    <button @onclick=@(() => Utils.CreateDefaultConfig())>reset local config file</button>
+</div>
+
+<p>
+    your items filter path is <code>@_config?.FiltersPath</code>
+</p>
+
+
+@if(_config is null)
+{
+    <p>Could not load the config</p>
+}
+else {
+    <QuickGrid Items=@_packages>
+        <PropertyColumn Property=@(p => p.Name) />
+        <PropertyColumn Property=@(p => p.Source) />
+        <TemplateColumn>
+            <button @onclick=@(async () => await HandleViewPackage(context.Source))>view</button>
+        </TemplateColumn>
+    </QuickGrid>
+
+    @if(_contents is not null)
+    {
+        <QuickGrid Items=@(_contents.AsQueryable())>
+            <PropertyColumn Property=@(p => p.Name) />
+            <PropertyColumn Property=@(p => p.Size) />
+            <PropertyColumn Property=@(p => p.Sha) />
+            <PropertyColumn Property=@(p => p.Url) />
+        </QuickGrid>
+    }
+}

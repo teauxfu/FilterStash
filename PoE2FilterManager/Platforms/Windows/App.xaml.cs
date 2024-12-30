@@ -19,7 +19,7 @@ namespace PoE2FilterManager.WinUI
             this.InitializeComponent();
         }
 
-        protected override MauiApp CreateMauiApp() => MauiProgram.CreateMauiApp();
+        protected override MauiApp CreateMauiApp() => PoE2FilterManager.Program.CreateMauiApp();
     }
 
 }
