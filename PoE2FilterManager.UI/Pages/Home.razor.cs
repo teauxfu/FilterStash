@@ -1,16 +1,21 @@
 using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.QuickGrid;
 using Microsoft.Extensions.Configuration;
+using Microsoft.JSInterop;
 using PoE2FilterManager.Data;
 using PoE2FilterManagerData;
 using System.Diagnostics;
 
 namespace PoE2FilterManagerUI.Pages
 {
-    public partial class Home : ComponentBase
+    public sealed partial class Home : ComponentBase, IAsyncDisposable, IDisposable
     {
         AppSettings? _config;
         IQueryable<Package>? _packages;
         private SyncService.PackageItem[]? _contents;
+        private bool disposedValue;
+        QuickGrid<Package>? _packagesGrid;
+        QuickGrid<SyncService.PackageItem>? _contentsGrid;
 
         [Inject] IConfiguration Configuration { get; set; } = default!;
         [Inject] SyncService SyncService { get; set; } = default!;
@@ -62,6 +67,58 @@ namespace PoE2FilterManagerUI.Pages
                     nameof(PoE2FilterManager)
             );
             Process.Start("explorer.exe", path);
+        }
+
+        async ValueTask IAsyncDisposable.DisposeAsync()
+        {
+            // shouldn't have to do this... some kind of js bug in quickgrid or webview i guess
+            try
+            {
+                if (_packagesGrid is not null)
+                    await _packagesGrid.DisposeAsync();
+                if (_contentsGrid is not null)
+                    await _contentsGrid.DisposeAsync();
+            }
+            catch (JSException)
+            {
+                // pass
+            }
+
+            // Dispose of unmanaged resources.
+            Dispose(false);
+
+            // Suppress finalization.
+            GC.SuppressFinalize(this);
+        }
+
+        void Dispose(bool disposing)
+        {
+            if (!disposedValue)
+            {
+                if (disposing)
+                {
+
+                    // TODO: dispose managed state (managed objects)
+                }
+
+                // TODO: free unmanaged resources (unmanaged objects) and override finalizer
+                // TODO: set large fields to null
+                disposedValue = true;
+            }
+        }
+
+        // // TODO: override finalizer only if 'Dispose(bool disposing)' has code to free unmanaged resources
+        // ~Home()
+        // {
+        //     // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
+        //     Dispose(disposing: false);
+        // }
+
+        void IDisposable.Dispose()
+        {
+            // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
+            Dispose(disposing: true);
+            GC.SuppressFinalize(this);
         }
     }
 }

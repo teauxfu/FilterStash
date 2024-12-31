@@ -6,6 +6,9 @@ This is a prototype desktop utility for syncing PoE2 filter packages.
 
 ![general idea](./general-idea.png)
 
+added inno setup for the installer
+tried packaging in winforms to see if it would be easier, it wasn't -- static assets can't be served from an RCL in winforms apparently
+
 ## Todos
 
 - ui lib, mudblazor or something?

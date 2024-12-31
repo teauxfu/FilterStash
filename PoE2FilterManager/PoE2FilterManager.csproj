@@ -11,6 +11,9 @@
         <EnableDefaultCssItems>false</EnableDefaultCssItems>
         <Nullable>enable</Nullable>
 		<TrimMode>full</TrimMode>
+		<Version>0.1.0</Version>
+		<AssemblyVersion>$(Version)</AssemblyVersion>
+		<FileVersion>$(Version)</FileVersion>
 
         <!-- Display name -->
         <ApplicationTitle>PoE2FilterManager</ApplicationTitle>
@@ -19,8 +22,8 @@
         <ApplicationId>com.companyname.poe2filtermanager</ApplicationId>
 
         <!-- Versions -->
-        <ApplicationDisplayVersion>1.0</ApplicationDisplayVersion>
-        <ApplicationVersion>1</ApplicationVersion>
+        <ApplicationDisplayVersion>$(Version)</ApplicationDisplayVersion>
+        <ApplicationVersion>$(Version)</ApplicationVersion>
 
         <!-- To develop, package, and publish an app to the Microsoft Store, see: https://aka.ms/MauiTemplateUnpackaged -->
         <WindowsPackageType>None</WindowsPackageType>
@@ -28,6 +31,19 @@
         <SupportedOSPlatformVersion>10.0.19041.0</SupportedOSPlatformVersion>
         <TargetPlatformMinVersion>10.0.19041.0</TargetPlatformMinVersion>
     </PropertyGroup>
+
+	<Target Name="GenerateInnoSetupDefine" BeforeTargets="Build">
+		<PropertyGroup>
+			<InnoSetupDefineFile>version.txt</InnoSetupDefineFile>
+			<Version>$(Version)</Version>
+		</PropertyGroup>
+
+		<!-- Write #define directive to the version_define.txt file -->
+		<WriteLinesToFile
+          File="$(InnoSetupDefineFile)"
+          Lines="#define MyAppVersion &quot;$(Version)&quot;"
+          Overwrite="true" />
+	</Target>
 
 	<!--note https://learn.microsoft.com/en-us/dotnet/maui/windows/deployment/publish-unpackaged-cli?view=net-maui-9.0#configure-the-project-build-settings-->
 	<PropertyGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows' and '$(RuntimeIdentifierOverride)' != ''">

@@ -1,4 +1,6 @@
-﻿namespace PoE2FilterManager
+﻿using System.Reflection;
+
+namespace PoE2FilterManager
 {
     public partial class App : Application
     {
@@ -9,7 +11,11 @@
 
         protected override Window CreateWindow(IActivationState? activationState)
         {
-            return new Window(new MainPage()) { Title = "Path of Exile 2 Filter Manager" };
+            string? version = ((AssemblyFileVersionAttribute)Attribute.GetCustomAttribute(
+                Assembly.GetExecutingAssembly(), typeof(AssemblyFileVersionAttribute), false)!)
+                ?.Version.ToString();
+
+            return new Window(new MainPage()) { Title = $"FilterStash {version}" };
         }
     }
 }

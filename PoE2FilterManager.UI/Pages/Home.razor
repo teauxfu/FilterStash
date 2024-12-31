@@ -18,8 +18,8 @@
 {
     <p>Could not load the config</p>
 }
-else {
-    <QuickGrid Items=@_packages>
+else if (_packages is not null) {
+    <QuickGrid @ref=@_packagesGrid Items=@_packages>
         <PropertyColumn Property=@(p => p.Name) />
         <PropertyColumn Property=@(p => p.Source) />
         <TemplateColumn>
@@ -29,7 +29,7 @@ else {
 
     @if(_contents is not null)
     {
-        <QuickGrid Items=@(_contents.AsQueryable())>
+        <QuickGrid @ref=@_contentsGrid Items=@(_contents.AsQueryable())>
             <PropertyColumn Property=@(p => p.Name) />
             <PropertyColumn Property=@(p => p.Size) />
             <PropertyColumn Property=@(p => p.Sha) />
