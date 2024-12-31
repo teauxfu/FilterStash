@@ -15,7 +15,7 @@ namespace PoE2FilterManager
                 Assembly.GetExecutingAssembly(), typeof(AssemblyFileVersionAttribute), false)!)
                 ?.Version.ToString();
 
-            return new Window(new MainPage()) { Title = $"FilterStash {version}" };
+            return new Window(new NavigationPage(new MainPage()));
         }
     }
 }

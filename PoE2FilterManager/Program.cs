@@ -4,7 +4,6 @@ using Serilog;
 using PoE2FilterManager.Data;
 using System.Text.Json;
 using Microsoft.Extensions.Hosting;
-using PoE2FilterManagerData;
 
 namespace PoE2FilterManager
 {

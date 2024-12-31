@@ -1,9 +1,30 @@
 ﻿@inherits LayoutComponentBase
 
-<div>
-    <main>
-        <article>
-            @Body
-        </article>
-    </main>
-</div>
+<style>
+    body {
+        margin: 0;
+    }
+
+    article {
+        padding-inline: 0px !important;
+    }
+
+    .vastiri-bg {
+        background-image: url('_content/PoE2FilterManager.UI/images/vastiri.jpeg');
+        background-size: cover; /* Make the image cover the entire viewport */
+        background-repeat: no-repeat; /* Prevent tiling of the image */
+        background-attachment: fixed; /* Keep the image fixed to the viewport */
+        background-position: center; /* Center the image in the viewport */
+        padding-inline: 1px;
+    }
+</style>
+
+<main>
+    <article style="padding-inline: 0px !important;">
+        <div class="vastiri-bg" style="padding-inline: 3px; padding-top: 2px; min-height: 100vh; min-width: 100vw;" >
+            <Acrylic>
+                @Body
+            </Acrylic>
+        </div>
+    </article>
+</main>

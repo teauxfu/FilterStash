@@ -1,14 +1,29 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
+
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:local="clr-namespace:PoE2FilterManager"
-             xmlns:ui="clr-namespace:PoE2FilterManagerUI;assembly=PoE2FilterManager.UI"
-             x:Class="PoE2FilterManager.MainPage">
+            xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+            xmlns:local="clr-namespace:PoE2FilterManager"
+            xmlns:ui="clr-namespace:PoE2FilterManager.UI;assembly=PoE2FilterManager.UI"
+            x:Class="PoE2FilterManager.MainPage"
+            >
+    <!-- Native MenuBar -->
+    <ContentPage.MenuBarItems>
+        <MenuBarItem Text="File">
+            <MenuFlyoutItem Text="Restart FilterStash" Clicked="OnRestartBlazorAppClicked" />
+            <MenuFlyoutItem Text="Open local PoE2 filters folder" Clicked="OnOpenPoE2Folder"  />
+            <MenuFlyoutItem Text="Open local filters cache" Clicked="OnOpenCacheFolder"  />
+        </MenuBarItem>
+        <MenuBarItem Text="Help">
+            <MenuFlyoutItem Text="About"  />
+        </MenuBarItem>
+    </ContentPage.MenuBarItems>
 
-    <BlazorWebView x:Name="blazorWebView" HostPage="wwwroot/index.html">
-        <BlazorWebView.RootComponents>
-            <RootComponent Selector="#app" ComponentType="{x:Type ui:Routes}" />
-        </BlazorWebView.RootComponents>
-    </BlazorWebView>
-
+    <Grid x:Name="BlazorContainer">
+        <!-- BlazorWebView Content -->
+        <BlazorWebView x:Name="blazorWebView" HostPage="wwwroot/index.html">
+            <BlazorWebView.RootComponents>
+                <RootComponent Selector="#app" ComponentType="{x:Type ui:Routes}" />
+            </BlazorWebView.RootComponents>
+        </BlazorWebView>
+    </Grid>
 </ContentPage>

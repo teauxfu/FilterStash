@@ -39,10 +39,7 @@
 		</PropertyGroup>
 
 		<!-- Write #define directive to the version_define.txt file -->
-		<WriteLinesToFile
-          File="$(InnoSetupDefineFile)"
-          Lines="#define MyAppVersion &quot;$(Version)&quot;"
-          Overwrite="true" />
+		<WriteLinesToFile File="$(InnoSetupDefineFile)" Lines="#define MyAppVersion &quot;$(Version)&quot;" Overwrite="true" />
 	</Target>
 
 	<!--note https://learn.microsoft.com/en-us/dotnet/maui/windows/deployment/publish-unpackaged-cli?view=net-maui-9.0#configure-the-project-build-settings-->

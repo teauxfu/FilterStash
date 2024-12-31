@@ -3,10 +3,9 @@ using Microsoft.AspNetCore.Components.QuickGrid;
 using Microsoft.Extensions.Configuration;
 using Microsoft.JSInterop;
 using PoE2FilterManager.Data;
-using PoE2FilterManagerData;
 using System.Diagnostics;
 
-namespace PoE2FilterManagerUI.Pages
+namespace PoE2FilterManager.UI.Pages
 {
     public sealed partial class Home : ComponentBase, IAsyncDisposable, IDisposable
     {

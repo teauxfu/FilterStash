@@ -1,7 +1,7 @@
 
 using Microsoft.AspNetCore.Components;
 
-namespace PoE2FilterManagerUI
+namespace PoE2FilterManager.UI
 {
     public partial class Routes : ComponentBase
     {

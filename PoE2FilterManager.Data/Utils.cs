@@ -1,7 +1,6 @@
-﻿using PoE2FilterManager.Data;
-using System.Text.Json;
+﻿using System.Text.Json;
 
-namespace PoE2FilterManagerData
+namespace PoE2FilterManager.Data
 {
     public static class Utils
     {

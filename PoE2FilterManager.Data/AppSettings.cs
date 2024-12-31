@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace PoE2FilterManager.Data
+﻿namespace PoE2FilterManager.Data
 {
     public record Package(string Name, string Source);
     public class AppSettings
@@ -12,13 +6,18 @@ namespace PoE2FilterManager.Data
         /// <summary>
         /// C:\Users\USER\Documents\My Games\Path of Exile 2
         /// </summary>
-        private static string _defaultPath = Path.Combine(
+        public static readonly string DefaultFiltersPath = Path.Combine(
             Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
             "My Games",
             "Path of Exile 2"
         );
-        
-        public string FiltersPath { get; set; } = _defaultPath;
+
+        /// <summary>
+        /// C:\Users\USER\Documents\My Games\Path of Exile 2\FilterStash
+        /// </summary>
+        public static string DefaultCachePath => Path.Combine(DefaultCachePath, "FilterStash");
+
+        public string FiltersPath { get; set; } = DefaultFiltersPath;
 
         public List<Package> Packages { get; set; } = [];
     }

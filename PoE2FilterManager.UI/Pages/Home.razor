@@ -1,21 +1,26 @@
 ﻿@page "/"
+@using PoE2FilterManager.Data
 
+<style>
+    .menu {
+        display: flex;
+        flex-direction: row;
+        gap: 2px;
+        border: 1px solid grey;
+        border-radius: 3px;
+    }
+</style>
 
 <h1>Path of Exile 2 Filter Manager</h1>
-
-<div>
-    <button @onclick=@(() => HandleOpenPoeFolder())>open PoE2 folder</button>
-    <button @onclick=@(() => HandleOpenConfigFile())>open manager config folder</button>
+<div style="display:flex; flex-direction: row; gap: 2px;">
+    <button @onclick=@(() => HandleOpenPoeFolder()) tile=@_config.FiltersPath>open PoE2 folder</button>
+    <button @onclick=@(() => HandleOpenConfigFile()) title="@Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), nameof(PoE2FilterManager))">
+        open manager config folder
+    </button>
     <button @onclick=@(() => Utils.CreateDefaultConfig())>reset local config file</button>
 </div>
 
-<p>
-    your items filter path is <code>@_config?.FiltersPath</code>
-</p>
-
-
-@if(_config is null)
-{
+@if(_config is null) {
     <p>Could not load the config</p>
 }
 else if (_packages is not null) {
@@ -26,7 +31,6 @@ else if (_packages is not null) {
             <button @onclick=@(async () => await HandleViewPackage(context.Source))>view</button>
         </TemplateColumn>
     </QuickGrid>
-
     @if(_contents is not null)
     {
         <QuickGrid @ref=@_contentsGrid Items=@(_contents.AsQueryable())>

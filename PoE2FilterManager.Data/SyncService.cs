@@ -1,8 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
-using Microsoft.IdentityModel.Abstractions;
 using Octokit;
 
-namespace PoE2FilterManagerData
+namespace PoE2FilterManager.Data
 {
     public class SyncService
     {
