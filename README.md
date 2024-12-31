@@ -1,4 +1,4 @@
-# PoE2FilterManager
+# FilterStash
 
 This is a prototype desktop utility for syncing PoE2 filter packages.
 
