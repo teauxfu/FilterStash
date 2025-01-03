@@ -4,6 +4,7 @@
             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
             xmlns:local="clr-namespace:PoE2FilterManager"
             xmlns:ui="clr-namespace:PoE2FilterManager.UI;assembly=PoE2FilterManager.UI"
+            xmlns:blazorweb="clr-namespace:Microsoft.AspNetCore.Components.Web;assembly=Microsoft.AspNetCore.Components.Web"
             x:Class="PoE2FilterManager.MainPage"
             >
     <!-- Native MenuBar -->
@@ -13,8 +14,11 @@
             <MenuFlyoutItem Text="Open local PoE2 filters folder" Clicked="OnOpenPoE2Folder"  />
             <MenuFlyoutItem Text="Open local filters cache" Clicked="OnOpenCacheFolder"  />
         </MenuBarItem>
+        <MenuBarItem Text="View">
+            <MenuFlyoutItem Text="Change background" Clicked="OnChangeBackground" />
+        </MenuBarItem>
         <MenuBarItem Text="Help">
-            <MenuFlyoutItem Text="About"  />
+            <MenuFlyoutItem Text="About" Clicked="OnOpenAbout"  />
         </MenuBarItem>
     </ContentPage.MenuBarItems>
 
@@ -23,6 +27,7 @@
         <BlazorWebView x:Name="blazorWebView" HostPage="wwwroot/index.html">
             <BlazorWebView.RootComponents>
                 <RootComponent Selector="#app" ComponentType="{x:Type ui:Routes}" />
+                <RootComponent Selector="head::after" ComponentType="{x:Type blazorweb:HeadOutlet}" />
             </BlazorWebView.RootComponents>
         </BlazorWebView>
     </Grid>

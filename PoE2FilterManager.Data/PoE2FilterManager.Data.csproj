@@ -1,18 +1,21 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>net9.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
-    <RootNamespace>$(MSBuildProjectName.Replace(" ", "_"))</RootNamespace>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFramework>net9.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+		<RootNamespace>$(MSBuildProjectName.Replace(" ", "_"))</RootNamespace>
+		<Version>0.1.0</Version>
+		<AssemblyVersion>$(Version)</AssemblyVersion>
+		<FileVersion>$(Version)</FileVersion>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="GitHub.Octokit.SDK" Version="0.0.31" />
-    <PackageReference Include="Microsoft.Data.Sqlite" Version="9.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Configuration" Version="9.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="9.0.0" />
-    <PackageReference Include="Octokit" Version="13.0.1" />
-  </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="GitHub.Octokit.SDK" Version="0.0.31" />
+		<PackageReference Include="Microsoft.AspNetCore.Components" Version="9.0.0" />
+		<PackageReference Include="Microsoft.Extensions.Configuration" Version="9.0.0" />
+		<PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="9.0.0" />
+		<PackageReference Include="Octokit" Version="13.0.1" />
+	</ItemGroup>
 
 </Project>

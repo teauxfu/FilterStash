@@ -20,3 +20,12 @@ tried packaging in winforms to see if it would be easier, it wasn't -- static as
 The app targets .NET 9 on Windows 10+ only. The UI is implemented in Blazor and deployed througha MAUI desktop shell. The installer is packaged using an Inno setup script. Releases are to be hosted on GitHub.
 
 ![app structure](./app-structure.png)
+
+### Changelog 
+
+#### prototype
+- 2024-12-29 initial scaffolding, connecting Octokit, etc.
+- 2024-12-30 toying with deployment methods, settled on MAUI Blazor with installs via InnoSetup
+- 2024-12-31 playing with ui, added native Windows menu, considering if MudBlazor is needed
+	- still deliberating on what to do for data persistence. either json or sqlite via efcore
+	- stealing some graphics from https://www.cameronsworld.net/

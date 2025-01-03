@@ -1,21 +1,23 @@
-﻿using System.Reflection;
+﻿using PoE2FilterManager.Data.Services;
+using System.Reflection;
 
 namespace PoE2FilterManager
 {
     public partial class App : Application
     {
-        public App()
+        private readonly MauiBridgeService _bridge;
+
+        public App(MauiBridgeService bridge)
         {
+            _bridge = bridge;
             InitializeComponent();
         }
 
         protected override Window CreateWindow(IActivationState? activationState)
         {
-            string? version = ((AssemblyFileVersionAttribute)Attribute.GetCustomAttribute(
-                Assembly.GetExecutingAssembly(), typeof(AssemblyFileVersionAttribute), false)!)
-                ?.Version.ToString();
-
-            return new Window(new NavigationPage(new MainPage()));
+            var version = Assembly.GetExecutingAssembly().GetName().Version!;
+            var page = new NavigationPage(new MainPage(_bridge));
+            return new Window(page) { Width = 1190, Height = 850, Title = $"FilterStash v{version.Major}.{version.Minor}.{version.Build}" } ;
         }
     }
 }

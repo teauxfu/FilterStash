@@ -1,30 +1,134 @@
-﻿@inherits LayoutComponentBase
+﻿@using PoE2FilterManager.Data.Services
+@inherits LayoutComponentBase
+@implements IAsyncDisposable
+@implements IDisposable
+@inject IIndexService IndexService
 
 <style>
     body {
-        margin: 0;
+    margin: 0;
+    width: 100%;
     }
 
     article {
-        padding-inline: 0px !important;
+    padding-inline: 0px !important;
     }
 
-    .vastiri-bg {
-        background-image: url('_content/PoE2FilterManager.UI/images/vastiri.jpeg');
-        background-size: cover; /* Make the image cover the entire viewport */
-        background-repeat: no-repeat; /* Prevent tiling of the image */
-        background-attachment: fixed; /* Keep the image fixed to the viewport */
-        background-position: center; /* Center the image in the viewport */
-        padding-inline: 1px;
+    .bg {
+    background-size: cover; /* Make the image cover the entire viewport */
+    background-repeat: no-repeat; /* Prevent tiling of the image */
+    background-attachment: fixed; /* Keep the image fixed to the viewport */
+    background-position: center; /* Center the image in the viewport */
+
+    padding-inline: 3px;
+    padding-top: 2px;
+    min-width: 100vw;
+    min-height: 100vh;
     }
+
+    #shell > div.acrylic {
+    width: 100%;
+    height: 100%;
+    }
+
+    tr {
+    background-color: rgba(255,255,255,.3);
+    border-radius: 0.5rem;
+    }
+
+
+    h1,h2,h3,h4,h5,h6 {
+    color: black;
+    }
+
 </style>
+
+<HeadContent>
+    @foreach(string bg in _theme.BgUrls)
+    {
+        <link rel="preload" href=@(bg[5..^2]) as="image" >
+    }
+</HeadContent>
 
 <main>
     <article style="padding-inline: 0px !important;">
-        <div class="vastiri-bg" style="padding-inline: 3px; padding-top: 2px; min-height: 100vh; min-width: 100vw;" >
-            <Acrylic>
-                @Body
-            </Acrylic>
-        </div>
+        <CascadingValue Value=@_theme>
+            <div id="shell" class=@($"bg") style=@BgStyle>
+                <Acrylic BackgroundRgba="rgba(255,255,255,.3)">
+                    <div style=" margin: 2px;">
+                        @Body
+                    </div>
+                </Acrylic>
+            </div>
+        </CascadingValue>
     </article>
 </main>
+
+@code {
+    string? visible = "visible";
+    string? BgStyle => string.IsNullOrWhiteSpace(visible) ? "background-color: white;" : $"background-image: {_theme.BackgroundImage};";
+
+    protected override void OnInitialized()
+    {
+        _theme.ValuesChanged += HandleThemeChange;
+        string? bg = IndexService.ReadIndex().PreferredBackground;
+        if (!string.IsNullOrWhiteSpace(bg) && _theme.BgUrls.Contains(bg))
+            _theme.BackgroundImage = bg;
+    }
+
+    async void HandleThemeChange() 
+    {
+        var index = IndexService.ReadIndex();
+        index.PreferredBackground = _theme.BackgroundImage;
+        IndexService.SaveIndex(index);
+        // visible = null;
+        // StateHasChanged();
+        // await Task.Delay(1000);
+        // visible = "visible";
+        StateHasChanged();
+    }
+
+    Theme _theme = new();
+
+
+    // idisposable
+    bool disposedValue;
+    async ValueTask IAsyncDisposable.DisposeAsync()
+    {
+
+        // Dispose of unmanaged resources.
+        Dispose(false);
+
+        // Suppress finalization.
+        GC.SuppressFinalize(this);
+    }
+
+    void Dispose(bool disposing)
+    {
+        if (!disposedValue)
+        {
+            if (disposing)
+            {
+                _theme.ValuesChanged -= HandleThemeChange;
+            }
+
+            // TODO: free unmanaged resources (unmanaged objects) and override finalizer
+            // TODO: set large fields to null
+            disposedValue = true;
+        }
+    }
+
+    // // TODO: override finalizer only if 'Dispose(bool disposing)' has code to free unmanaged resources
+    // ~Home()
+    // {
+    //     // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
+    //     Dispose(disposing: false);
+    // }
+
+    void IDisposable.Dispose()
+    {
+        // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
+        Dispose(disposing: true);
+        GC.SuppressFinalize(this);
+    }
+}

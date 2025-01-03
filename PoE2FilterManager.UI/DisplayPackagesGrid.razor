@@ -1,0 +1,141 @@
+﻿@implements IAsyncDisposable
+@implements IDisposable
+
+<style>
+    .button-column {
+        padding: 0 !important;
+    }
+</style>
+
+@if(Packages is null)
+{
+    <p><img src="_content/PoE2FilterManager.UI/images/book.gif" /> Loading...</p>
+}
+else 
+{
+    <QuickGrid @ref=@_packagesGrid Items=@Packages>
+        <TemplateColumn Title="Name">
+            <div style="text-align: left; min-width: 200px;">
+                @if (CurrentPackageName == context.Package.Name)
+                {
+                    <b>
+                        <a target="_blank" href=@context.Package.Source>
+                            @context.Package.Name
+                        </a>
+                    </b>
+                }
+                else
+                {
+                    <a target="_blank" href=@context.Package.Source>
+                        @context.Package.Name
+                    </a>
+                }
+
+            </div>
+        </TemplateColumn>
+        <TemplateColumn Title="Last updated">
+            @if (context.Package.LastUpdated is not null)
+            {
+                <span>@context.Package.LastUpdated</span>
+            }
+            else
+            {
+                <span>never</span>
+            }
+        </TemplateColumn>
+        <TemplateColumn Class="button-column">
+            <div>
+                @if (CurrentPackageName != context.Package.Name)
+                {
+                    <button @onclick=@(async () => await HandleOnViewPackage(context.Package.Name))>🔍 view details</button>
+                }
+                else
+                {
+                    <button @onclick=@HandleOnCloseCurrentPackage>❌ close details</button>
+                }
+            </div>
+        </TemplateColumn>
+        <TemplateColumn Class="button-column">
+            <button @onclick=@(async() => await HandleOnUpdatePackage(context.Package.Name))>📥 update package</button>
+        </TemplateColumn>
+        <TemplateColumn Class="button-column">
+            <button>🚮 delete</button>
+        </TemplateColumn>
+        
+    </QuickGrid>
+
+}
+
+@code {
+    // debugging, grid refs trying to mitigate js object disposal err on f5 reload
+
+    QuickGrid<PackageDisplay>? _packagesGrid;
+
+    [EditorRequired, Parameter] public IQueryable<PackageDisplay>? Packages { get; set; } 
+    [EditorRequired, Parameter] public string? CurrentPackageName { get; set; }
+    [Parameter] public EventCallback<string> OnViewPackage { get; set; }
+    [Parameter] public EventCallback<string> OnUpdatePackage { get; set; }
+    [Parameter] public EventCallback OnCloseCurrentPackage { get; set; }
+
+    async Task HandleOnViewPackage(string name)
+    {
+        if (OnViewPackage.HasDelegate)
+            await OnViewPackage.InvokeAsync(name);
+    }
+
+    async Task HandleOnUpdatePackage(string name)
+    {
+        if (OnUpdatePackage.HasDelegate)
+            await OnUpdatePackage.InvokeAsync(name);
+    }
+
+    async Task HandleOnCloseCurrentPackage()
+    {
+        if (OnCloseCurrentPackage.HasDelegate)
+            await OnCloseCurrentPackage.InvokeAsync();
+    }
+
+    // idisposable
+    bool disposedValue;
+    async ValueTask IAsyncDisposable.DisposeAsync()
+    {
+        // shouldn't have to do this... some kind of js bug in quickgrid or webview i guess
+        try
+        {
+            if (_packagesGrid is not null)
+                await _packagesGrid.DisposeAsync();
+        }
+        catch (JSException)
+        {
+            // pass
+        }
+
+        // Dispose of unmanaged resources.
+        Dispose(false);
+
+        // Suppress finalization.
+        GC.SuppressFinalize(this);
+    }
+
+    void IDisposable.Dispose()
+    {
+        // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
+        Dispose(disposing: true);
+        GC.SuppressFinalize(this);
+    }
+
+    void Dispose(bool disposing)
+    {
+        if (!disposedValue)
+        {
+            if (disposing)
+            {
+                // TODO: dispose managed state (managed objects)
+            }
+
+            // TODO: free unmanaged resources (unmanaged objects) and override finalizer
+            // TODO: set large fields to null
+            disposedValue = true;
+        }
+    }
+}

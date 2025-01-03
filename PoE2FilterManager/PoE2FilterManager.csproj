@@ -23,7 +23,7 @@
 
         <!-- Versions -->
         <ApplicationDisplayVersion>$(Version)</ApplicationDisplayVersion>
-        <ApplicationVersion>$(Version)</ApplicationVersion>
+        <!--<ApplicationVersion>1</ApplicationVersion>-->
 
         <!-- To develop, package, and publish an app to the Microsoft Store, see: https://aka.ms/MauiTemplateUnpackaged -->
         <WindowsPackageType>None</WindowsPackageType>
@@ -39,7 +39,10 @@
 		</PropertyGroup>
 
 		<!-- Write #define directive to the version_define.txt file -->
-		<WriteLinesToFile File="$(InnoSetupDefineFile)" Lines="#define MyAppVersion &quot;$(Version)&quot;" Overwrite="true" />
+		<WriteLinesToFile
+          File="$(InnoSetupDefineFile)"
+          Lines="#define MyAppVersion &quot;$(Version)&quot;"
+          Overwrite="true" />
 	</Target>
 
 	<!--note https://learn.microsoft.com/en-us/dotnet/maui/windows/deployment/publish-unpackaged-cli?view=net-maui-9.0#configure-the-project-build-settings-->

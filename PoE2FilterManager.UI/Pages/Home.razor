@@ -1,43 +1,88 @@
 ﻿@page "/"
 @using PoE2FilterManager.Data
+@using Microsoft.AspNetCore.Components.QuickGrid
 
 <style>
+    a {
+    color: midnightblue;
+    text-decoration: underline;
+    }
+
     .menu {
-        display: flex;
-        flex-direction: row;
-        gap: 2px;
-        border: 1px solid grey;
-        border-radius: 3px;
+    display: flex;
+    flex-direction: row;
+    gap: 2px;
+    border: 1px solid grey;
+    border-radius: 0.5rem;
+    }
+
+    table {
+    border-collapse: separate !important;
+    width: 100%; /* Adjust to your needs */
+    border: 1px solid grey;
+    border-radius: 0.5rem;
+    }
+
+    button {
+    border-radius: 0.5rem;
+    background-color: whitesmoke;
+    }
+
+    bold {
+    font-weight: bolder;
     }
 </style>
 
-<h1>Path of Exile 2 Filter Manager</h1>
-<div style="display:flex; flex-direction: row; gap: 2px;">
-    <button @onclick=@(() => HandleOpenPoeFolder()) tile=@_config.FiltersPath>open PoE2 folder</button>
-    <button @onclick=@(() => HandleOpenConfigFile()) title="@Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), nameof(PoE2FilterManager))">
-        open manager config folder
-    </button>
-    <button @onclick=@(() => Utils.CreateDefaultConfig())>reset local config file</button>
+@if (!string.IsNullOrWhiteSpace(_error))
+{
+    <p style="color:red; text-align: center; font-weight: bold;">
+        @_error
+    </p>
+}
+
+<div style="display: flex; flex-direction: row; align-content: center">
+    <h1 style="margin-top: auto; margin-bottom: auto;">FilterStash @GetVersion()</h1>
+    <img style="height: 75px; width: 75px" src="_content/PoE2FilterManager.UI/images/divine-orbs-500x500.png" />
 </div>
 
-@if(_config is null) {
-    <p>Could not load the config</p>
+@if (_displayPackages is null)
+{
+    <p>Could not load the config 🤕 is your index.json damaged? </p>
 }
-else if (_packages is not null) {
-    <QuickGrid @ref=@_packagesGrid Items=@_packages>
-        <PropertyColumn Property=@(p => p.Name) />
-        <PropertyColumn Property=@(p => p.Source) />
-        <TemplateColumn>
-            <button @onclick=@(async () => await HandleViewPackage(context.Source))>view</button>
-        </TemplateColumn>
-    </QuickGrid>
-    @if(_contents is not null)
-    {
-        <QuickGrid @ref=@_contentsGrid Items=@(_contents.AsQueryable())>
-            <PropertyColumn Property=@(p => p.Name) />
-            <PropertyColumn Property=@(p => p.Size) />
-            <PropertyColumn Property=@(p => p.Sha) />
-            <PropertyColumn Property=@(p => p.Url) />
-        </QuickGrid>
-    }
+else if(!_displayPackages.Any())
+{
+    <p>It looks like you haven't added any filter packs yet. Use the form below to get started.</p>
+    <AddFilterForm OnValidSubmit=@HandleAddPackage />
+}
+else
+{
+    <div style="display: flex; flex-direction: column; gap: 2px;">
+        <Acrylic BackgroundRgba="rgba(255,255,255,.1)">
+            <p>Currently installed filter pack: </p>
+            <button @onclick=@(() => showAddForm = !showAddForm)>add new filter pack</button>
+            <div>
+                @if(showAddForm)
+                {
+                    <AddFilterForm OnValidSubmit=@HandleAddPackage />
+                }
+            </div>
+        </Acrylic>
+
+
+
+        <Acrylic BackgroundRgba="rgba(255,255,255,.1)">
+            <h2>Currently subscribed item filter packages</h2>
+            <DisplayPackagesGrid Packages=@_displayPackages 
+                CurrentPackageName=@_currentPackage?.Name 
+                OnViewPackage=@HandleViewPackage
+                OnCloseCurrentPackage=@HandleClosePackageDetail
+                OnUpdatePackage=@(async (string name) => await HandleUpdatePackage(name)) />
+        </Acrylic>
+
+        @if (_currentPackage is not null)
+        {
+            <DisplayPackageDetail Package=@_currentPackage
+                    OnUpdatePackage=@(async (string name) => await HandleUpdatePackage(name)) />
+        }
+    </div>
 }
