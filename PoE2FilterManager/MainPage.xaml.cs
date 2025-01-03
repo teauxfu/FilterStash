@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.Reflection;
 using Microsoft.AspNetCore.Components.Web;
 using PoE2FilterManager.Data.Services;
+using System.Text;
 
 namespace PoE2FilterManager
 {
@@ -36,7 +37,12 @@ namespace PoE2FilterManager
         private void OnOpenAbout(object sender, EventArgs e)
         {
             var version = Assembly.GetExecutingAssembly().GetName().Version!;
-            DisplayAlert($"FilterStash v{version.Major}.{version.Minor}.{version.Build}", "https://github.com/teauxfu/filterstash" , "Ok");
+            StringBuilder sb = new();
+            sb.AppendLine("https://github.com/teauxfu/filterstash");
+            sb.AppendLine("This app will read and write files from your PoE2 folder in My Documents, and will connect to the internet to download files from filter packs you subscribe to.");
+            sb.AppendLine("This app is fully local and does not collect or store any user data except what's needed to function.");
+            DisplayAlert(title: $"FilterStash v{version.Major}.{version.Minor}.{version.Build}",
+                message: sb.ToString(), cancel: "Ok");
         }
         
 
