@@ -11,7 +11,7 @@
         <EnableDefaultCssItems>false</EnableDefaultCssItems>
         <Nullable>enable</Nullable>
 		<TrimMode>full</TrimMode>
-		<Version>0.1.0</Version>
+		<Version>0.1.1</Version>
 		<AssemblyVersion>$(Version)</AssemblyVersion>
 		<FileVersion>$(Version)</FileVersion>
 		<!--<PublishTrimmed>true</PublishTrimmed>

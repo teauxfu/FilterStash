@@ -1,12 +1,6 @@
-﻿using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Configuration;
-using Serilog;
-using PoE2FilterManager.Data;
-using Microsoft.Maui.LifecycleEvents;
-using Microsoft.UI;
-using Microsoft.UI.Windowing;
-using Microsoft.AspNetCore.Components.Web;
+﻿using PoE2FilterManager.Data;
 using PoE2FilterManager.Data.Services;
+using Serilog;
 
 namespace PoE2FilterManager
 {
@@ -29,21 +23,21 @@ namespace PoE2FilterManager
                 fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
             });
 
-//            bool isDebug = false;
-//#if DEBUG
-//            // HACK don't have easy access to env.isdevelopment here on a mauibuilder 
-//            isDebug = true;
-//#endif
+            //            bool isDebug = false;
+            //#if DEBUG
+            //            // HACK don't have easy access to env.isdevelopment here on a mauibuilder 
+            //            isDebug = true;
+            //#endif
 
-//            string configPath;
-//            if (isDebug)
-//                configPath = "appsettings.json";
-//            else
-//            {
-//                configPath = Utils.DefaultIndexPath;
-//                if(!Utils.ConfigIsValid())
-//                    Utils.CreateDefaultConfig();
-//            }
+            //            string configPath;
+            //            if (isDebug)
+            //                configPath = "appsettings.json";
+            //            else
+            //            {
+            //                configPath = Utils.DefaultIndexPath;
+            //                if(!Utils.ConfigIsValid())
+            //                    Utils.CreateDefaultConfig();
+            //            }
 
             // TODO run this sooner, then use it for initializing serilog
             //var config = new ConfigurationBuilder()
@@ -51,6 +45,11 @@ namespace PoE2FilterManager
             //    .AddJsonFile(configPath, optional: false, reloadOnChange: true)
             //    .Build();
             //builder.Configuration.AddConfiguration(config);
+
+            if (!Directory.Exists(Utils.DefaultFiltersPath))
+                Directory.CreateDirectory(Utils.DefaultFiltersPath);
+            if (!Directory.Exists(Utils.DefaultCachePath))
+                Directory.CreateDirectory(Utils.DefaultCachePath);
 
             builder.Services.AddMauiBlazorWebView();
             builder.Services.AddSingleton<MauiBridgeService>();

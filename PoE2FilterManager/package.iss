@@ -48,8 +48,9 @@ Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{
 
 [Files]
 Source: "bin\Release\net9.0-windows10.0.19041.0\win10-x64\publish\{#MyAppExeName}"; DestDir: "{app}"; Flags: ignoreversion
-Source: "bin\Release\net9.0-windows10.0.19041.0\win10-x64\publish\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "bin\Release\net9.0-windows10.0.19041.0\win10-x64\publish\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs; Excludes: "ug-CN, uk, uk-UA, ur-PK, uz-Latn-UZ, vi, vi-VN, zh-CN, zh-Hans, zh-Hant, zh-HK, zh-TW, af-ZA, am-ET, ar, ar-SA, as-IN, az-Latn-AZ, bg-BG, bn-IN, bs-Latn-BA, ca, ca-ES, ca-Es-VALENCIA, cs, cs-CZ, cy-GB, da, da-DK, de, de-DE, el, el-GR, en-GB, en-us, es, es-ES, es-MX, et-EE, eu-ES, fa-IR, fi, fi-FI, fil-PH, fr, fr-CA, fr-FR, ga-IE, gd-gb, gl-ES, gu-IN, he, he-IL, hi, hi-IN, hr, hr-HR, hu, hu-HU, hy-AM, id, id-ID, is-IS, it, it-IT, ja, ja-JP, ka-GE, kk-KZ, km-KH, kn-IN, ko, kok-IN, ko-KR, lb-LU, lo-LA, lt-LT, lv-LV, mi-NZ, mk-MK, ml-IN, mr-IN, ms, ms-MY, mt-MT, nb, nb-NO, ne-NP, nl, nl-NL, nn-NO, or-IN, pa-IN, pl, pl-PL, pt, pt-BR, pt-PT, quz-PE, ro, ro-RO, ru, ru-RU, sk, sk-SK, sl-SI, sq-AL, sr-Cyrl-BA, sr-Cyrl-RS, sr-Latn-RS, sv, sv-SE, ta-IN, te-IN, th, th-TH, tr, tr-TR, tt-RU"
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
+
 
 [Icons]
 Name: "{autoprograms}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"
