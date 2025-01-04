@@ -1,0 +1,98 @@
+﻿@page "/"
+@using FilterStash
+@using Microsoft.AspNetCore.Components.QuickGrid
+
+<style>
+    a {
+    color: midnightblue;
+    text-decoration: underline;
+    }
+
+    .menu {
+    display: flex;
+    flex-direction: row;
+    gap: 2px;
+    border: 1px solid grey;
+    border-radius: 0.5rem;
+    }
+
+    table {
+    border-collapse: separate !important;
+    width: 100%; /* Adjust to your needs */
+    border: 1px solid grey;
+    border-radius: 0.5rem;
+    }
+
+    button {
+    border-radius: 0.5rem;
+    background-color: whitesmoke;
+    }
+
+    bold {
+    font-weight: bolder;
+    }
+</style>
+
+@if (!string.IsNullOrWhiteSpace(_error))
+{
+    <p style="color:red; text-align: center; font-weight: bold;">
+        @_error
+    </p>
+}
+
+<div style="display: flex; flex-direction: row; align-content: center">
+    <h1 style="margin-top: auto; margin-bottom: auto;">@Utils.GetVersionString()</h1>
+    <img style="height: 75px; width: 75px" src="_content/FilterStash.UI/images/divine-orbs-500x500.png" />
+</div>
+
+@if (_displayPackages is null)
+{
+    <p>Could not load the config 🤕 is your index.json damaged? </p>
+}
+else if(!_displayPackages.Any())
+{
+    <Acrylic BackgroundRgba="rgba(255,255,255,.1)">
+        <p>It looks like you haven't added any filter packs yet. Use the form below to get started.</p>
+        <AddFilterForm OnValidSubmit=@HandleAddPackage />
+    </Acrylic>
+}
+else
+{
+    <div style="display: flex; flex-direction: column; gap: 2px;">
+        <Acrylic BackgroundRgba="rgba(255,255,255,.1)">
+            <h2>Currently subscribed item filter packages</h2>
+            <p>
+                Use this grid to add, remove, and update filter packs. 
+            </p>
+            <p>
+                Currently the only supported host is GitHub.
+                Files from the source you provide will be downloaded to your computer, so only install packs from a trusted source.
+                To help reduce risk, only the following file types will be synced: <code>@(string.Join(", ", allowedExtensions))</code>.
+            </p>
+            <DisplayPackagesGrid Packages=@_displayPackages 
+                CurrentPackageName=@_currentPackage?.Name 
+                OnViewPackage=@HandleViewPackage
+                OnCloseCurrentPackage=@HandleClosePackageDetail
+                OnUpdatePackage=@(async (string name) => await HandleUpdatePackage(name)) 
+                OnInstallPackage=@((string name) => InstallPackage(name))
+                OnUninstallPackage=@((string name) => UninstallPackage(name))
+                OnDeletePackage=@((string name) => DeletePackage(name))
+                OnAddPackage=@(() => showAddForm = !showAddForm)
+                UpdatesPending=@_updatePending
+                />
+        </Acrylic>
+
+        @if(showAddForm)
+        {
+            <AddFilterForm OnValidSubmit=@HandleAddPackage />
+        }
+
+        @if (_currentPackage is not null)
+        {
+            <DisplayPackageDetail Package=@_currentPackage
+                    OnUpdatePackage=@(async (string name) => await HandleUpdatePackage(name, force: false))
+                    OnRedownloadPackage=@(async (string name) => await HandleUpdatePackage(name, force: true))
+                    UpdatePending=@_updatePending/>
+        }
+    </div>
+}
