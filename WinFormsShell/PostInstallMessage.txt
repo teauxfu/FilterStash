@@ -1,3 +1,0 @@
-FilterStash installation completed.
-
-Open an issue at https://github.com/teauxfu/filterstash if you encounter any problems, or have a feature request.

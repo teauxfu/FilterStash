@@ -1,6 +1,0 @@
-You're about to install FilterStash. 
-
-This program is a tool for managing Path of Exile 2 loot filters. 
-It is a standalone application that can be used to subscribe to loot filters for the game. 
-It is not affiliated with Grinding Gear Games, the developers of Path of Exile. 
-FilterStash is open source software, and you can find the source code and more information about the project on GitHub at https://github.com/teauxfu/filterstash.
