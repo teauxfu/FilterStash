@@ -51,38 +51,48 @@
 }
 else if(!_displayPackages.Any())
 {
-    <p>It looks like you haven't added any filter packs yet. Use the form below to get started.</p>
-    <AddFilterForm OnValidSubmit=@HandleAddPackage />
+    <Acrylic BackgroundRgba="rgba(255,255,255,.1)">
+        <p>It looks like you haven't added any filter packs yet. Use the form below to get started.</p>
+        <AddFilterForm OnValidSubmit=@HandleAddPackage />
+    </Acrylic>
 }
 else
 {
     <div style="display: flex; flex-direction: column; gap: 2px;">
         <Acrylic BackgroundRgba="rgba(255,255,255,.1)">
-            <p>Currently installed filter pack: </p>
-            <button @onclick=@(() => showAddForm = !showAddForm)>🆕 add new filter pack</button>
-            <div>
-                @if(showAddForm)
-                {
-                    <AddFilterForm OnValidSubmit=@HandleAddPackage />
-                }
-            </div>
-        </Acrylic>
-
-
-
-        <Acrylic BackgroundRgba="rgba(255,255,255,.1)">
             <h2>Currently subscribed item filter packages</h2>
+            <p>
+                Use this grid to add, remove, and update filter packs. 
+            </p>
+            <p>
+                Currently the only supported host is GitHub.
+                Files from the source you provide will be downloaded to your computer, so only install packs from a trusted source.
+                To help reduce risk, only the following file types will be synced: <code>@(string.Join(", ", allowedExtensions))</code>.
+            </p>
             <DisplayPackagesGrid Packages=@_displayPackages 
                 CurrentPackageName=@_currentPackage?.Name 
                 OnViewPackage=@HandleViewPackage
                 OnCloseCurrentPackage=@HandleClosePackageDetail
-                OnUpdatePackage=@(async (string name) => await HandleUpdatePackage(name)) />
+                OnUpdatePackage=@(async (string name) => await HandleUpdatePackage(name)) 
+                OnInstallPackage=@((string name) => InstallPackage(name))
+                OnUninstallPackage=@((string name) => UninstallPackage(name))
+                OnDeletePackage=@((string name) => DeletePackage(name))
+                OnAddPackage=@(() => showAddForm = !showAddForm)
+                UpdatesPending=@_updatePending
+                />
         </Acrylic>
+
+        @if(showAddForm)
+        {
+            <AddFilterForm OnValidSubmit=@HandleAddPackage />
+        }
 
         @if (_currentPackage is not null)
         {
             <DisplayPackageDetail Package=@_currentPackage
-                    OnUpdatePackage=@(async (string name) => await HandleUpdatePackage(name)) />
+                    OnUpdatePackage=@(async (string name) => await HandleUpdatePackage(name, force: false))
+                    OnRedownloadPackage=@(async (string name) => await HandleUpdatePackage(name, force: true))
+                    UpdatePending=@_updatePending/>
         }
     </div>
 }

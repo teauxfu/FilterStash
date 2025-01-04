@@ -1,17 +1,14 @@
-﻿@implements IAsyncDisposable
+﻿@using PoE2FilterManager.Data.Services
+@implements IAsyncDisposable
 @implements IDisposable
+@inject IIndexService IndexService
 
-<style>
-    .button-column {
-        padding: 0 !important;
-    }
-</style>
 
-@if(Packages is null)
+@if (Packages is null)
 {
     <p><img src="_content/PoE2FilterManager.UI/images/book.gif" /> Loading...</p>
 }
-else 
+else
 {
     <QuickGrid @ref=@_packagesGrid Items=@Packages>
         <TemplateColumn Title="Name">
@@ -19,14 +16,14 @@ else
                 @if (CurrentPackageName == context.Package.Name)
                 {
                     <b>
-                        <a target="_blank" href=@context.Package.Source>
+                        <a target="_blank" href=@context.Package.Source title=@context.Package.Source>
                             @context.Package.Name
                         </a>
                     </b>
                 }
                 else
                 {
-                    <a target="_blank" href=@context.Package.Source>
+                    <a target="_blank" href=@context.Package.Source title=@context.Package.Source>
                         @context.Package.Name
                     </a>
                 }
@@ -43,6 +40,20 @@ else
                 <span>never</span>
             }
         </TemplateColumn>
+        <TemplateColumn>
+            @if (context.Package.Name == GetCurrentlyInstalledPackageName())
+            {
+                <button onclick=@(async () => await HandleOnUninstallPackageAsync(context.Package.Name))>
+                    ❌ uninstall
+                </button>
+            }
+            else
+            {
+                <button onclick=@(async () => await HandleOnInstallPackageAsync(context.Package.Name))>
+                    🛠 install
+                </button>
+            }
+        </TemplateColumn>
         <TemplateColumn Class="button-column">
             <div>
                 @if (CurrentPackageName != context.Package.Name)
@@ -56,19 +67,32 @@ else
             </div>
         </TemplateColumn>
         <TemplateColumn Class="button-column">
-            <div>
-
-            </div>
+            <button @onclick=@(async() => await HandleOnUpdatePackage(context.Package.Name))>
+                <div style="display:flex; flex-direction: row; gap: 2px;">
+                    📥 update package
+                    @if(UpdatesPending.Contains(context.Package.Name))
+                    {
+                        <div class="ping-container" title="update available">
+                            <div class="ping-animation"></div>
+                            <div class="ping-circle"></div>
+                        </div>
+                    }
+                </div>
+            </button>
         </TemplateColumn>
         <TemplateColumn Class="button-column">
-            <button @onclick=@(async() => await HandleOnUpdatePackage(context.Package.Name))>📥 update package</button>
+            <HeaderTemplate>
+                <button @onclick=@HandleOnAddPackageAsync>
+                    🆕 add new package
+                </button>
+            </HeaderTemplate>
+            <ChildContent>
+                <button @onclick=@(async () => await HandleOnDeletePackageAsync(context.Package.Name))>
+                    🗑️ delete
+                </button>
+            </ChildContent>
         </TemplateColumn>
-        <TemplateColumn Class="button-column">
-            <button>🚮 delete</button>
-        </TemplateColumn>
-        
     </QuickGrid>
-
 }
 
 @code {
@@ -76,11 +100,27 @@ else
 
     QuickGrid<PackageDisplay>? _packagesGrid;
 
-    [EditorRequired, Parameter] public IQueryable<PackageDisplay>? Packages { get; set; } 
-    [EditorRequired, Parameter] public string? CurrentPackageName { get; set; }
+    [Parameter, EditorRequired] public IQueryable<PackageDisplay>? Packages { get; set; }
+    [Parameter, EditorRequired] public string? CurrentPackageName { get; set; }
+    [Parameter] public List<string> UpdatesPending { get; set; } = [];
+
     [Parameter] public EventCallback<string> OnViewPackage { get; set; }
     [Parameter] public EventCallback<string> OnUpdatePackage { get; set; }
     [Parameter] public EventCallback OnCloseCurrentPackage { get; set; }
+    [Parameter] public EventCallback OnAddPackage { get; set; }
+    [Parameter] public EventCallback<string> OnInstallPackage { get; set; }
+    [Parameter] public EventCallback<string> OnUninstallPackage { get; set; }
+    [Parameter] public EventCallback<string> OnDeletePackage { get; set; }
+
+
+    string? GetCurrentlyInstalledPackageName()
+    {
+        // hack: we shouldn't use the index service from here directly
+        // but we need a cheap way to get the currently installed package
+
+        var index = IndexService.ReadIndex();
+        return index.CurrentlyInstalledPackage;
+    }
 
     async Task HandleOnViewPackage(string name)
     {
@@ -98,6 +138,30 @@ else
     {
         if (OnCloseCurrentPackage.HasDelegate)
             await OnCloseCurrentPackage.InvokeAsync();
+    }
+
+    async Task HandleOnAddPackageAsync()
+    {
+        if (OnAddPackage.HasDelegate)
+            await OnAddPackage.InvokeAsync();
+    }
+
+    async Task HandleOnInstallPackageAsync(string name)
+    {
+        if (OnInstallPackage.HasDelegate)
+            await OnInstallPackage.InvokeAsync(name);
+    }
+
+    async Task HandleOnUninstallPackageAsync(string name)
+    {
+        if (OnUninstallPackage.HasDelegate)
+            await OnUninstallPackage.InvokeAsync(name);
+    }
+
+    async Task HandleOnDeletePackageAsync(string name)
+    {
+        if (OnDeletePackage.HasDelegate)
+            await OnDeletePackage.InvokeAsync(name);
     }
 
     // idisposable

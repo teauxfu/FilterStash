@@ -1,0 +1,38 @@
+﻿.button-column {
+    padding: 0 !important;
+}
+
+.ping-container {
+    position: relative;
+    height: 12px; /* h-3 in Tailwind */
+    width: 12px; /* w-3 in Tailwind */
+    display: inline-block;
+}
+
+.ping-animation {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    border-radius: 9999px; /* rounded-full in Tailwind */
+    background-color: #38bdf8; /* bg-sky-400 in Tailwind */
+    opacity: 0.75;
+    animation: ping 1s cubic-bezier(0, 0, 0.2, 1) infinite;
+}
+
+.ping-circle {
+    position: relative;
+    height: 12px; /* h-3 in Tailwind */
+    width: 12px; /* w-3 in Tailwind */
+    border-radius: 9999px; /* rounded-full in Tailwind */
+    background-color: #0ea5e9; /* bg-sky-500 in Tailwind */
+}
+
+/* Keyframes for the ping animation */
+@keyframes ping {
+    75%, 100% {
+        transform: scale(2);
+        opacity: 0;
+    }
+}

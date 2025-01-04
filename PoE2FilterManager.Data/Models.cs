@@ -16,10 +16,10 @@ namespace PoE2FilterManager.Data
         public string Source { get; init; } = source;
         public string? ReadMeHtml { get; set; }
         public string? B64Content { get; set; }
-        public List<PackageItem> Items { get; set; } = [];
         public DateTimeOffset? LastUpdated { get; set; } 
-        public string? LastHash { get; set; }   
-        public string Hash
+        public string? LastCommitSha { get; set; }   
+        public DateTimeOffset? LastCommitDate { get;  set; }
+        public string ContentsHash
         {
             get
             {
@@ -32,8 +32,9 @@ namespace PoE2FilterManager.Data
                 return hexString.ToString();
             }
         }
+        public List<PackageItem> Items { get; set; } = [];
     }
- 
+
     public class PackageIndex
     {
         public string? CurrentlyInstalledPackage { get; set; }

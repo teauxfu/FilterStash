@@ -17,7 +17,7 @@
         public readonly List<string> BgUrls = [.. _bgUrls?.Select(i => $"url('_content/PoE2FilterManager.UI/images/{Uri.EscapeDataString(i)}')")];
 
         private static readonly string[] _bgUrls = [
-            "Act1_Concept.png",
+            "Act1_Concept1.png",
             "Act2_Concept.png",
             "Act3_Concept.png",
             "ChaosTrial_Cinematic3.png",

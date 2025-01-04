@@ -10,18 +10,27 @@
         <div style="display:flex; flex-direction: column; justify-content: space-between; ">
             <h3><b>@Package.Name</b> package details</h3>
             <ul>
+                @if(UpdatePending.Contains(Package.Name))
+                {
+                    <li>
+                        <b>It looks like there's an update available for this package.</b>
+                    </li>
+                }
                 <li>
                     Source: <a href=@Package.Source target="_blank">@Package.Source</a>
                 </li>
                 <li>
-                    Last updated: @(Package.LastUpdated?.ToString() ?? "never")
+                    Last commit sha: <code>@Package.LastCommitSha</code>
+                </li>
+                <li>
+                    Local files last updated: @(Package.LastUpdated?.ToString() ?? "never")
                 </li>
             </ul>
         </div>
         <div style="display:flex; gap: 3px;">
             @if (!string.IsNullOrWhiteSpace(Package.ReadMeHtml))
             {
-                string readmeId = $"readme_{Package.Hash}";
+                string readmeId = $"readme_{Package.ContentsHash}";
                 <button popovertarget=@readmeId>📑 show readme</button>
                 <div popover id=@readmeId>
                     @(new MarkupString(Package.ReadMeHtml))
@@ -32,8 +41,8 @@
                 <span title="no ReadMe was available">--</span>
             }
             <button @onclick=@HandleOpenPackageFolder>📂 open local folder</button>
-            <button @onclick=@(async() => await HandleOnRedownloadPackage(Package.Name))>♻ re-download files</button>
-           @*  
+            <button @onclick=@(async() => await HandleOnRedownloadPackageAsync(Package.Name))>♻ re-download files</button>
+            @*  
                SHA is unreliable for files after dl due to metadata
                @{
                 string hashId = $"hash_{Package.Hash}";
@@ -87,6 +96,7 @@
     [Parameter, EditorRequired] public Package? Package { get; set; }
     [Parameter] public EventCallback<string> OnUpdatePackage { get; set; }
     [Parameter] public EventCallback<string> OnRedownloadPackage { get; set; }
+    [Parameter] public List<string> UpdatePending { get; set; } = [];
 
     async Task HandleOnUpdatePackage(string name)
     {
@@ -94,7 +104,7 @@
             await OnUpdatePackage.InvokeAsync(name);
     }
 
-    async Task HandleOnRedownloadPackage(string name)
+    async Task HandleOnRedownloadPackageAsync(string name)
     {
         if (OnRedownloadPackage.HasDelegate)
             await OnRedownloadPackage.InvokeAsync(name);
