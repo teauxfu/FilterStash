@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Components;
-using System.Security.Cryptography;
+﻿using System.Security.Cryptography;
 using System.Text;
 
 namespace PoE2FilterManager.Data

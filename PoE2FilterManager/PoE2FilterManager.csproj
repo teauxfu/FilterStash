@@ -14,8 +14,11 @@
 		<Version>0.1.0</Version>
 		<AssemblyVersion>$(Version)</AssemblyVersion>
 		<FileVersion>$(Version)</FileVersion>
+		<!--<PublishTrimmed>true</PublishTrimmed>
+		<TrimMode>link</TrimMode>-->
 
-        <!-- Display name -->
+
+		<!-- Display name -->
         <ApplicationTitle>PoE2FilterManager</ApplicationTitle>
 
         <!-- App Identifier -->
@@ -32,6 +35,10 @@
         <TargetPlatformMinVersion>10.0.19041.0</TargetPlatformMinVersion>
     </PropertyGroup>
 
+	<ItemGroup>
+		<MauiIcon Include="Resources\AppIcon\orb.png" />
+	</ItemGroup>
+
 	<Target Name="GenerateInnoSetupDefine" BeforeTargets="Build">
 		<PropertyGroup>
 			<InnoSetupDefineFile>version.txt</InnoSetupDefineFile>
@@ -39,10 +46,7 @@
 		</PropertyGroup>
 
 		<!-- Write #define directive to the version_define.txt file -->
-		<WriteLinesToFile
-          File="$(InnoSetupDefineFile)"
-          Lines="#define MyAppVersion &quot;$(Version)&quot;"
-          Overwrite="true" />
+		<WriteLinesToFile File="$(InnoSetupDefineFile)" Lines="#define MyAppVersion &quot;$(Version)&quot;" Overwrite="true" />
 	</Target>
 
 	<!--note https://learn.microsoft.com/en-us/dotnet/maui/windows/deployment/publish-unpackaged-cli?view=net-maui-9.0#configure-the-project-build-settings-->
@@ -69,16 +73,17 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="Microsoft.Extensions.Configuration" Version="9.0.0" />
-        <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="9.0.0" />
-        <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="9.0.0" />
-        <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="9.0.0" />
+      <Content Include="Resources\AppIcon\orb.png">
+        <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+        <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      </Content>
+    </ItemGroup>
+
+    <ItemGroup>
         <PackageReference Include="Microsoft.Maui.Controls" Version="9.0.21" />
         <PackageReference Include="Microsoft.AspNetCore.Components.WebView.Maui" Version="9.0.21" />
-        <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="9.0.0" />
         <PackageReference Include="Serilog" Version="4.2.0" />
         <PackageReference Include="Serilog.Sinks.Console" Version="6.0.0" />
-        <PackageReference Include="Serilog.Sinks.Debug" Version="3.0.0" />
     </ItemGroup>
 
     <ItemGroup>

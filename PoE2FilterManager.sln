@@ -16,12 +16,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PoE2FilterManager.Data", "PoE2FilterManager.Data\PoE2FilterManager.Data.csproj", "{2E3CCCCB-15D8-43C3-9FB0-3D4350CFD4BD}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Scripts", "Scripts", "{633812A9-F185-4076-8C67-B7AA23CC8669}"
-	ProjectSection(SolutionItems) = preProject
-		Scripts\package.iss = Scripts\package.iss
-		Scripts\publish.ps1 = Scripts\publish.ps1
-	EndProjectSection
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -43,8 +37,5 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
-	EndGlobalSection
-	GlobalSection(NestedProjects) = preSolution
-		{633812A9-F185-4076-8C67-B7AA23CC8669} = {E1311811-B0DB-4428-B4DC-569B90292781}
 	EndGlobalSection
 EndGlobal
