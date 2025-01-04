@@ -106,7 +106,7 @@ namespace FilterStash.UI.Pages
             {
                 string fileName = Path.GetFileName(file);
                 string newPath = Path.Combine(Utils.DefaultFiltersPath, fileName);
-                File.Copy(file, newPath, true);
+                File.Copy(file, newPath, overwrite: true);
             }
 
             index.CurrentlyInstalledPackage = name;
@@ -200,6 +200,10 @@ namespace FilterStash.UI.Pages
                 await DownloadPackageFiles(package, force);
                 IndexService.SaveIndex(index);
             }
+
+            if(name == index.CurrentlyInstalledPackage)
+                await InstallPackage(name);
+
             await ReloadPackages();
         }
 

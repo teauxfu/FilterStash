@@ -80,6 +80,9 @@
     PackageEditModel editModel = new();
     string? _warning;
 
+    // used to check if name in use, consider taking a list of current package names as a param instead
+    [Inject] IIndexService IndexService { get; set; } = default!;
+
     protected override void OnInitialized()
     {
         EditContext = new(editModel);
@@ -90,6 +93,11 @@
     async void HandleFormChangedAsync(object? sender, FieldChangedEventArgs e)
     {
         validationMessageStore.Clear();
+
+        var index = IndexService.ReadIndex();
+        if (index.Packages.ContainsKey(editModel.Name))
+            validationMessageStore.Add(new FieldIdentifier(editModel, nameof(editModel.Name)), "The given filter name is already in use.");
+
         // currently only supporting github as a source
         if (!EditContext.GetValidationMessages().Any())
         {

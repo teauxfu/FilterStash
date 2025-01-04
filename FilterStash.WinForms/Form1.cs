@@ -77,19 +77,19 @@ namespace WinFormsShell
             var gh = new GitHubSyncService();
             if (await gh.GetLatestReleaseAsync() is not Release latest)
             {
-                MessageBox.Show("There are no releases to compare against");
+                Process.Start("explorer.exe", "https:github.com/teauxfu/filterstash/releases/latest");
                 return;
             }    
-            else if (latest.TagName != Assembly.GetExecutingAssembly().GetName().Version?.ToString())
+            else if (!Utils.GetVersionString().Contains(latest.TagName))
             {
                 var dlg = MessageBox.Show($"You are running {Utils.GetVersionString()}. There is a new version {latest.TagName} available. Do you want to download it now?", 
                     "Update available",
                     MessageBoxButtons.YesNo
                 );
-                if(dlg == DialogResult.Yes)
+                if(dlg == DialogResult.Yes && !string.IsNullOrWhiteSpace(latest.Assets[0].BrowserDownloadUrl))
                 {
-                    if(!string.IsNullOrWhiteSpace(latest.Assets[0].BrowserDownloadUrl))
-                        Process.Start("explorer.exe", latest.Assets[0].BrowserDownloadUrl);
+                    Process.Start("explorer.exe", latest.Assets[0].BrowserDownloadUrl);
+                    return;
                 }
             }
             else

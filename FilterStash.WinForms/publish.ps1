@@ -24,7 +24,7 @@ if ($?) {
        $version = $props.Project.PropertyGroup.Version
 
        # if the compile step was successful, upload it to a new github release using the gh cli 
-       gh release create "v$version" "bin\Release\win10installer\filterstash-v$version.exe" --title "FilterStash v$version" --draft --prerelease --notes "this is a prerelease"
+       gh release create "v$version" "bin\Release\win10installer\filterstash-v$version.exe" --title "FilterStash v$version" --prerelease --notes "See the changelog for details"
     }
 
 } else {

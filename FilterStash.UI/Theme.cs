@@ -23,6 +23,8 @@
             "Monk_Base.jpg",
             "Ranger_Base.jpg",
             "Witch_base.jpg",
+            "Warrior_base.jpg",
+            "sorceress_base.jpg",
         ];
 
 
