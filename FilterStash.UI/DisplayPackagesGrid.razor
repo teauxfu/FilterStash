@@ -27,7 +27,6 @@ else
                         @context.Package.Name
                     </a>
                 }
-
             </div>
         </TemplateColumn>
         <TemplateColumn Title="Last updated">
@@ -40,19 +39,21 @@ else
                 <span>never</span>
             }
         </TemplateColumn>
-        <TemplateColumn>
-            @if (context.Package.Name == GetCurrentlyInstalledPackageName())
-            {
-                <button onclick=@(async () => await HandleOnUninstallPackageAsync(context.Package.Name))>
-                    ❌ uninstall
-                </button>
-            }
-            else
-            {
-                <button onclick=@(async () => await HandleOnInstallPackageAsync(context.Package.Name))>
-                    🛠 install
-                </button>
-            }
+        <TemplateColumn Class="button-column">
+            <div>
+                @if (context.Package.Name == GetCurrentlyInstalledPackageName())
+                {
+                    <button onclick=@(async () => await HandleOnUninstallPackageAsync(context.Package.Name))>
+                        ❌ uninstall
+                    </button>
+                }
+                else
+                {
+                    <button onclick=@(async () => await HandleOnInstallPackageAsync(context.Package.Name))>
+                        🛠 install
+                    </button>
+                }
+            </div>
         </TemplateColumn>
         <TemplateColumn Class="button-column">
             <div>
@@ -67,18 +68,21 @@ else
             </div>
         </TemplateColumn>
         <TemplateColumn Class="button-column">
-            <button @onclick=@(async() => await HandleOnUpdatePackage(context.Package.Name))>
-                <div style="display:flex; flex-direction: row; gap: 2px;">
-                    📥 update package
-                    @if(UpdatesPending.Contains(context.Package.Name))
-                    {
-                        <div class="ping-container" title="update available">
-                            <div class="ping-animation"></div>
-                            <div class="ping-circle"></div>
-                        </div>
-                    }
-                </div>
-            </button>
+            <div>
+                <button @onclick=@(async() => await HandleOnUpdatePackage(context.Package.Name))>
+                    <div style="display:flex; flex-direction: row; gap: 2px;">
+                        📥 update
+                        @if (UpdatesPending.Contains(context.Package.Name))
+                        {
+                            <span>pending</span>
+                            <div class="ping-container" title="update available">
+                                <div class="ping-animation"></div>
+                                <div class="ping-circle"></div>
+                            </div>
+                        }
+                    </div>
+                </button>
+            </div>
         </TemplateColumn>
         <TemplateColumn Class="button-column">
             <HeaderTemplate>
@@ -87,9 +91,11 @@ else
                 </button>
             </HeaderTemplate>
             <ChildContent>
-                <button @onclick=@(async () => await HandleOnDeletePackageAsync(context.Package.Name))>
-                    🗑️ delete
-                </button>
+                <div>
+                    <button @onclick=@(async () => await HandleOnDeletePackageAsync(context.Package.Name))>
+                        🗑️ delete
+                    </button>
+                </div>
             </ChildContent>
         </TemplateColumn>
     </QuickGrid>

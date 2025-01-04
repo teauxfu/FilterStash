@@ -8,6 +8,7 @@ using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 using System.Reflection;
 using System.Text;
 using Octokit;
+using Microsoft.Web.WebView2.WinForms;
 
 namespace WinFormsShell
 {
@@ -32,6 +33,7 @@ namespace WinFormsShell
 
             var services = new ServiceCollection();
             services.AddWindowsFormsBlazorWebView();
+            services.AddBlazorWebViewDeveloperTools();
 
             // try to move this stuff to program.cs
             services.AddSingleton(_bridge);
