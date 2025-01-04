@@ -199,6 +199,7 @@ namespace FilterStash.UI.Pages
                 index.Packages[package.Name] = update;
                 await DownloadPackageFiles(package, force);
                 IndexService.SaveIndex(index);
+                index = IndexService.ReadIndex();
             }
 
             if(name == index.CurrentlyInstalledPackage)
