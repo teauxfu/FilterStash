@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
 	<PropertyGroup>
 		<OutputType>WinExe</OutputType>
-		<TargetFramework>net9.0-windows</TargetFramework>
+		<TargetFramework>net9.0-windows10.0.19041.0</TargetFramework>
 		<Nullable>enable</Nullable>
 		<UseWindowsForms>true</UseWindowsForms>
 		<ImplicitUsings>enable</ImplicitUsings>
@@ -20,4 +20,14 @@
 		<ProjectReference Include="..\FilterStash.UI\FilterStash.UI.csproj" />
 		<ProjectReference Include="..\FilterStash\FilterStash.csproj" />
 	</ItemGroup>
+
+	<Target Name="GenerateInnoSetupDefine" BeforeTargets="Build">
+		<PropertyGroup>
+			<InnoSetupDefineFile>version.txt</InnoSetupDefineFile>
+			<Version>$(Version)</Version>
+		</PropertyGroup>
+
+		<!-- Write #define directive to the version_define.txt file -->
+		<WriteLinesToFile File="$(InnoSetupDefineFile)" Lines="#define MyAppVersion &quot;$(Version)&quot;" Overwrite="true" />
+	</Target>
 </Project>

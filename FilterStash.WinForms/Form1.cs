@@ -6,6 +6,8 @@ using Microsoft.Extensions.DependencyInjection;
 using System.Diagnostics;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 using System.Reflection;
+using System.Text;
+using Octokit;
 
 namespace WinFormsShell
 {
@@ -13,6 +15,7 @@ namespace WinFormsShell
     {
 
         BlazorWebView? blazor;
+        BlazorHybridBridgeService _bridge = new();
 
         public Form1()
         {
@@ -25,12 +28,13 @@ namespace WinFormsShell
         private void LoadBlazor()
         {
             panel1.Controls.Remove(blazor);
+            blazor?.Dispose();
 
             var services = new ServiceCollection();
             services.AddWindowsFormsBlazorWebView();
 
             // try to move this stuff to program.cs
-            services.AddSingleton<BlazorHybridBridgeService>();
+            services.AddSingleton(_bridge);
             services.AddSingleton<ISyncService, GitHubSyncService>();
             services.AddSingleton<IIndexService>(new JsonIndexService(Utils.DefaultIndexPath));
 
@@ -60,12 +64,38 @@ namespace WinFormsShell
 
         private void helpToolStripMenuItem_Click(object sender, EventArgs e)
         {
-
+            MessageBox.Show(caption: Utils.GetVersionString(), text: Utils.GetAboutText());
         }
 
         private void changeBackgroundToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            _bridge.RaiseButtonClicked();
+        }
 
+        private async void checkForUpdatesToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            var gh = new GitHubSyncService();
+            if (await gh.GetLatestReleaseAsync() is not Release latest)
+            {
+                MessageBox.Show("There are no releases to compare against");
+                return;
+            }    
+            else if (latest.TagName != Assembly.GetExecutingAssembly().GetName().Version?.ToString())
+            {
+                var dlg = MessageBox.Show($"You are running {Utils.GetVersionString()}. There is a new version {latest.TagName} available. Do you want to download it now?", 
+                    "Update available",
+                    MessageBoxButtons.YesNo
+                );
+                if(dlg == DialogResult.Yes)
+                {
+                    if(!string.IsNullOrWhiteSpace(latest.Assets[0].BrowserDownloadUrl))
+                        Process.Start("explorer.exe", latest.Assets[0].BrowserDownloadUrl);
+                }
+            }
+            else
+            {
+                MessageBox.Show($"You are running the latest version {Utils.GetVersionString()}.");
+            }
         }
     }
 }

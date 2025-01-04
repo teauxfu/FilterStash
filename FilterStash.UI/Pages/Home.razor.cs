@@ -23,13 +23,6 @@ namespace FilterStash.UI.Pages
         string? _error;
         private readonly HttpClient http = new();
 
-        static string? GetVersion()
-        {
-            var version = Assembly.GetExecutingAssembly().GetName().Version!;
-            return $"{version.Major}.{version.Minor}.{version.Build}";
-        }
-
-
         // debugging, grid refs trying to mitigate js object disposal err on f5 reload
         QuickGrid<PackageItem>? _contentsGrid;
 

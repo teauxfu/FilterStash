@@ -6,7 +6,7 @@
 #include "version.txt"
 #define MyAppPublisher "teauxfu"
 #define MyAppURL "https://github.com/teauxfu/filterstash"
-#define MyAppExeName "WinFormsShell.exe"
+#define MyAppExeName "FilterStash.WinForms.exe"
 
 [Setup]
 ; NOTE: The value of AppId uniquely identifies this application. Do not use the same AppId value in installers for other applications.
@@ -34,7 +34,7 @@ ArchitecturesInstallIn64BitMode=x64compatible
 DisableProgramGroupPage=yes
 ; Remove the following line to run in administrative install mode (install for all users.)
 PrivilegesRequired=lowest
-OutputDir="bin\Release\win10installer"
+OutputDir=bin\Release\win10installer
 OutputBaseFilename=filterstash-v{#MyAppVersion}
 Compression=lzma
 SolidCompression=yes

@@ -58,5 +58,32 @@ namespace FilterStash.Services
                 throw;
             }
         }
+
+        string owner = "teauxfu";
+        string repo = "FilterStash";
+
+        public async Task<Release[]> GetFilterStashReleasesAsync()
+        {
+            try
+            {
+                return [.. await _client.Repository.Release.GetAll(owner, repo)];
+            }
+            catch
+            {
+                return [];
+            }
+        }
+
+        public async Task<Release?> GetLatestReleaseAsync()
+        {
+            try
+            {
+                return await _client.Repository.Release.GetLatest(owner, repo);
+            }
+            catch
+            {
+                return null;
+            }
+        }
     }
 }

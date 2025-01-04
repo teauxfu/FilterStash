@@ -33,6 +33,16 @@
 		<SupportedOSPlatformVersion>10.0.19041.0</SupportedOSPlatformVersion>
 		<TargetPlatformMinVersion>10.0.19041.0</TargetPlatformMinVersion>
 	</PropertyGroup>
+	
+	<Target Name="GenerateInnoSetupDefine" BeforeTargets="Build">
+		<PropertyGroup>
+			<InnoSetupDefineFile>version.txt</InnoSetupDefineFile>
+			<Version>$(Version)</Version>
+		</PropertyGroup>
+
+		<!-- Write #define directive to the version_define.txt file -->
+		<WriteLinesToFile File="$(InnoSetupDefineFile)" Lines="#define MyAppVersion &quot;$(Version)&quot;" Overwrite="true" />
+	</Target>
 
 	<Target Name="GenerateInnoSetupDefine" BeforeTargets="Build">
 		<PropertyGroup>

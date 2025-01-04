@@ -35,13 +35,7 @@ namespace FilterStash
 
         private void OnOpenAbout(object sender, EventArgs e)
         {
-            var version = Assembly.GetExecutingAssembly().GetName().Version!;
-            StringBuilder sb = new();
-            sb.AppendLine("https://github.com/teauxfu/filterstash");
-            sb.AppendLine("This app will read and write files from your PoE2 folder in My Documents, and will connect to the internet to download files from filter packs you subscribe to using the GitHub API.");
-            sb.AppendLine("App config is fully local, you can view it from the File menu. You can uninstall by going to settings > add and remove programs.");
-            DisplayAlert(title: $"FilterStash v{version.Major}.{version.Minor}.{version.Build}",
-                message: sb.ToString(), cancel: "Ok");
+            DisplayAlert(title: Utils.GetVersionString(), message: Utils.GetAboutText(), cancel: "Ok");
         }
 
 

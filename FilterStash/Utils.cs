@@ -1,9 +1,28 @@
-﻿using System.Text.Json;
+﻿using System.Reflection;
+using System.Text;
+using System.Text.Json;
 
 namespace FilterStash
 {
     public static class Utils
     {
+        public static string GetVersionString()
+        {
+            var version = Assembly.GetExecutingAssembly().GetName().Version;
+            return $"FilterStash v{version?.Major}.{version?.Minor}.{version?.Build}";
+        }
+
+        public static string GetAboutText()
+        {
+            StringBuilder sb = new();
+            sb.AppendLine("Project repo: https://github.com/teauxfu/filterstash");
+            sb.AppendLine();
+            sb.AppendLine("This app will read and write files from your PoE2 folder in My Documents, and will connect to the internet to download files from filter packs you subscribe to using the GitHub API.");
+            sb.AppendLine("App config is fully local, you can view it from the File menu > open cache folder.");
+            sb.AppendLine("You can uninstall by going to settings > add and remove programs.");
+            return sb.ToString();
+        }
+
         static readonly JsonSerializerOptions _jsonOptions = new()
         {
             WriteIndented = true,
