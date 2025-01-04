@@ -11,9 +11,9 @@ namespace PoE2FilterManager
 {
     public partial class MainPage : ContentPage
     {
-        private readonly MauiBridgeService _bridge;
+        private readonly BlazorHybridBridgeService _bridge;
 
-        public MainPage(MauiBridgeService bridge)
+        public MainPage(BlazorHybridBridgeService bridge)
         {
             _bridge = bridge;
             InitializeComponent();

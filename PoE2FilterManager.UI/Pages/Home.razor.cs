@@ -37,7 +37,7 @@ namespace PoE2FilterManager.UI.Pages
         [Inject] IIndexService IndexService { get; set; } = default!;
         [Inject] ISyncService SyncService { get; set; } = default!;
         [Inject] ILogger<Home> Log { get; set; } = default!;
-        [Inject] MauiBridgeService Bridge { get; set; } = default!;
+        [Inject] BlazorHybridBridgeService Bridge { get; set; } = default!;
 
         [CascadingParameter] public Theme? ThemeContext { get; set; }
 

@@ -1,0 +1,134 @@
+@using System.ComponentModel.DataAnnotations
+@using FilterStash.Services
+@implements IDisposable
+
+@inject ISyncService SyncService
+
+<style>
+    form {
+    border: 1px solid grey;
+    border-radius: .5rem;
+    max-width: 500px;
+    }
+
+    .form-inputs {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    }
+
+    .form-inputs label {
+    display: flex;
+    flex-direction: column;
+    }
+
+    .form-buttons {
+    display: flex;
+    gap: 3px;
+    }
+</style>
+
+<Acrylic BackgroundRgba="rgba(255,255,255,.3)">
+    @if (EditContext is null)
+    {
+        <p>Loading...</p>
+    }
+    else
+    {
+        <EditForm EditContext=@EditContext OnValidSubmit=@HandleValidSubmitAsync>
+            <h3>Add new filter pack</h3>
+            <DataAnnotationsValidator />
+            <div class="form-inputs">
+                <label>
+                    Filter pack name:
+                    <InputText @bind-Value=@editModel.Name placeholder="..." />
+                </label>
+                <label>
+                    Filter pack source (only GitHub repos are supported currently):
+                    <InputText @bind-Value=@editModel.Source placeholder="https://github.com/user/repo" />
+                </label>
+            </div>
+
+            @if(!string.IsNullOrWhiteSpace(_warning))
+            {
+                <p style="color: orangered">
+                    @_warning
+                </p>
+            }
+            <ValidationSummary />
+            <div class="form-buttons">
+                @if (!EditContext.GetValidationMessages().Any())
+                {
+                    <button type="submit">Add filter package</button>
+                }
+                else
+                {
+                    <button type="submit" disabled>Add filter package</button>
+                }
+                <button @onclick=@HandleClearForm>Clear form</button>
+            </div>
+        </EditForm>
+    }
+</Acrylic>
+
+
+@code {
+    [Parameter] public EventCallback<Package> OnValidSubmit { get; set; }
+
+    EditContext EditContext = default!;
+    ValidationMessageStore validationMessageStore = default!;
+    PackageEditModel editModel = new();
+    string? _warning;
+
+    protected override void OnInitialized()
+    {
+        EditContext = new(editModel);
+        validationMessageStore = new(EditContext);
+        EditContext.OnFieldChanged += HandleFormChangedAsync;
+    }
+
+    async void HandleFormChangedAsync(object? sender, FieldChangedEventArgs e)
+    {
+        validationMessageStore.Clear();
+        // currently only supporting github as a source
+        if (!EditContext.GetValidationMessages().Any())
+        {
+            if (await SyncService.GetFilterPackageAsync(editModel.Name, editModel.Source) is Package package)
+            {
+                bool filterFileMissing = !package.Items.Where(p => p.Name.EndsWith(".filter", StringComparison.OrdinalIgnoreCase)).Any();
+                if (filterFileMissing)
+                    _warning = "It looks like this package source exists, but doesn't contain a filter file. Did you paste the right link?";
+                else
+                    _warning = null;
+            }
+            else 
+            {
+                validationMessageStore.Add(new FieldIdentifier(editModel, nameof(editModel.Source)), "The given source was invalid");
+            }
+        }
+    }
+
+    void HandleClearForm()
+        => editModel.Source = editModel.Name = string.Empty;
+
+    class PackageEditModel
+    {
+        [Required] public string Name { get; set; } = string.Empty;
+        [Required] public string Source { get; set; } = string.Empty;
+    }
+
+    async Task HandleValidSubmitAsync()
+    {        
+        if (await SyncService.GetFilterPackageAsync(editModel.Name, editModel.Source) is Package package)
+        {
+            if (OnValidSubmit.HasDelegate)
+                await OnValidSubmit.InvokeAsync(package);
+        }   
+    }
+
+    void IDisposable.Dispose()
+    {
+        if (EditContext is not null)
+            EditContext.OnFieldChanged -= HandleFormChangedAsync;
+    }
+}

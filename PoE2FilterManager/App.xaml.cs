@@ -5,9 +5,9 @@ namespace PoE2FilterManager
 {
     public partial class App : Application
     {
-        private readonly MauiBridgeService _bridge;
+        private readonly BlazorHybridBridgeService _bridge;
 
-        public App(MauiBridgeService bridge)
+        public App(BlazorHybridBridgeService bridge)
         {
             _bridge = bridge;
             InitializeComponent();

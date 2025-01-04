@@ -1,0 +1,23 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
+	<PropertyGroup>
+		<OutputType>WinExe</OutputType>
+		<TargetFramework>net9.0-windows</TargetFramework>
+		<Nullable>enable</Nullable>
+		<UseWindowsForms>true</UseWindowsForms>
+		<ImplicitUsings>enable</ImplicitUsings>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Microsoft.AspNetCore.Components" Version="9.0.0" />
+		<PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="9.0.0" />
+		<PackageReference Include="Microsoft.AspNetCore.Components.WebView" Version="9.0.0" />
+		<PackageReference Include="Microsoft.AspNetCore.Components.WebView.WindowsForms" Version="9.0.21" />
+		<PackageReference Include="Serilog" Version="4.2.0" />
+		<PackageReference Include="Serilog.Sinks.Console" Version="6.0.0" />
+		<PackageReference Include="Serilog.Sinks.Debug" Version="3.0.0" />
+	</ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\FilterStash.UI\FilterStash.UI.csproj" />
+		<ProjectReference Include="..\FilterStash\FilterStash.csproj" />
+	</ItemGroup>
+</Project>
