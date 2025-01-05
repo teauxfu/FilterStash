@@ -68,21 +68,44 @@ else
             </div>
         </TemplateColumn>
         <TemplateColumn Class="button-column">
-            <div>
-                <button @onclick=@(async() => await HandleOnUpdatePackage(context.Package.Name))>
-                    <div style="display:flex; flex-direction: row; gap: 2px;">
-                        📥 update
-                        @if (UpdatesPending.Contains(context.Package.Name))
-                        {
-                            <span>pending</span>
-                            <div class="ping-container" title="update available">
-                                <div class="ping-animation"></div>
-                                <div class="ping-circle"></div>
+            @if (context.Package.SourceIsGitHub)
+            {
+                @if (UpdatesPending.Contains(context.Package.Name))
+                { 
+                    <div>
+                        <button @onclick=@(async() => await HandleOnUpdatePackage(context.Package.Name))>
+                            <div style="display:flex; flex-direction: row; gap: 2px;">
+                                📥 update pending
+                                @if (UpdatesPending.Contains(context.Package.Name))
+                                {
+                                    <div class="ping-container" title="update available">
+                                        <div class="ping-animation"></div>
+                                        <div class="ping-circle"></div>
+                                    </div>
+                                }
                             </div>
-                        }
+                        </button>
                     </div>
-                </button>
-            </div>
+                }
+                else 
+                {
+                    <div>
+                        <span>up to date</span>
+                    </div>
+                }
+            }
+            else 
+            {
+                <div>
+                    <button disabled>
+                        <div style="display:flex; flex-direction: row; gap: 2px;">
+                            📥 update not supported
+                        </div>
+                    </button>
+                </div>
+            }
+
+
         </TemplateColumn>
         <TemplateColumn Class="button-column">
             <HeaderTemplate>

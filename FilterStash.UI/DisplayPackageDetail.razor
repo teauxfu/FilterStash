@@ -3,26 +3,31 @@
 
 <Acrylic BackgroundRgba="rgba(255,255,255,.3)">
 
-    @if(Package is null)
+    @if (Package is null)
     {
         <p>loading...</p>
     }
-    else {
+    else
+    {
         <div style="display:flex; flex-direction: column; justify-content: space-between; ">
             <h3><b>@Package.Name</b> package details</h3>
             <ul>
-                @if(UpdatePending.Contains(Package.Name))
+                @if (UpdatePending.Contains(Package.Name))
                 {
                     <li>
                         <b>It looks like there's an update available for this package.</b>
                     </li>
                 }
-                <li>
-                    Source: <a href=@Package.Source target="_blank">@Package.Source</a>
-                </li>
-                <li>
-                    Last commit sha: <code>@Package.LastCommitSha</code>
-                </li>
+                @if (Package.SourceIsGitHub)
+                {
+
+                    <li>
+                        Source: <a href=@Package.Source target="_blank">@Package.Source</a>
+                    </li>
+                    <li>
+                        Last commit sha: <code>@Package.LastCommitSha</code>
+                    </li>
+                }
                 <li>
                     Local files last updated: @(Package.LastUpdated?.ToString() ?? "never")
                 </li>
@@ -37,12 +42,11 @@
                     @(new MarkupString(Package.ReadMeHtml))
                 </div>
             }
-            else
-            {
-                <span title="no ReadMe was available">--</span>
-            }
             <button @onclick=@HandleOpenPackageFolder>📂 open local folder</button>
-            <button @onclick=@(async() => await HandleOnRedownloadPackageAsync(Package.Name))>♻ re-download files</button>
+            @if (Package.SourceIsGitHub)
+            {
+                <button @onclick=@(async() => await HandleOnRedownloadPackageAsync(Package.Name))>♻ re-download files</button>
+            }
             @*  
                SHA is unreliable for files after dl due to metadata
                @{
@@ -121,7 +125,7 @@
 
     private void HandleOpenPackageFolder()
     {
-        if(Package is not null)
+        if (Package is not null)
         {
             string packageDir = Path.Combine(Utils.DefaultCachePath, Package.Name);
             Directory.CreateDirectory(packageDir);

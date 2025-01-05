@@ -1,4 +1,5 @@
 ﻿using System.Reflection;
+using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
 
@@ -10,6 +11,14 @@ namespace FilterStash
         {
             var version = Assembly.GetExecutingAssembly().GetName().Version;
             return $"FilterStash v{version?.Major}.{version?.Minor}.{version?.Build}";
+        }
+
+        public static string GetFileSha1Hash(string filePath)
+        {
+            using FileStream fs = new(filePath, FileMode.Open, FileAccess.Read);
+            using SHA1 sha1 = SHA1.Create();
+            byte[] hashBytes = sha1.ComputeHash(fs);
+            return Convert.ToHexStringLower(hashBytes);
         }
 
         public static string GetAboutText()

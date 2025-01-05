@@ -1,4 +1,5 @@
-﻿using System.Security.Cryptography;
+﻿using Octokit;
+using System.Security.Cryptography;
 using System.Text;
 
 namespace FilterStash
@@ -13,6 +14,11 @@ namespace FilterStash
     {
         public string Name { get; init; } = name;
         public string Source { get; init; } = source;
+
+        public bool SourceIsGitHub => Source.Contains("https://github.com", StringComparison.OrdinalIgnoreCase)
+                || Source.Contains("https://github.com", StringComparison.OrdinalIgnoreCase);
+        public bool SourceIsLocal => Source.EndsWith(".zip", StringComparison.OrdinalIgnoreCase) && File.Exists(Source);
+
         public string? ReadMeHtml { get; set; }
         public string? B64Content { get; set; }
         public DateTimeOffset? LastUpdated { get; set; }

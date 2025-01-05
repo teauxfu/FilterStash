@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.QuickGrid;
 using Microsoft.Extensions.Logging;
 using Microsoft.JSInterop;
+using System.IO.Compression;
 using System.Reflection;
 
 namespace FilterStash.UI.Pages
@@ -184,7 +185,20 @@ namespace FilterStash.UI.Pages
         {
             var index = IndexService.ReadIndex();
             index.Packages[package.Name] = package;
-            await DownloadPackageFiles(package);
+
+            if (package.SourceIsGitHub)
+            {
+                Log.LogInformation("GitHub package detected, attempting to download package files from source {source}", package.Source);
+                await DownloadPackageFiles(package);
+            }
+            else if (package.SourceIsLocal)
+            {
+                Log.LogInformation("Local zip package detected, attempting to extract package files from source {source}", package.Source);
+                string packageDir = Path.Combine(Utils.DefaultCachePath, package.Name);
+                Directory.CreateDirectory(packageDir);
+                ZipFile.ExtractToDirectory(package.Source, packageDir);
+            }
+
             IndexService.SaveIndex(index);
             showAddForm = false;
             await ReloadPackages();
@@ -194,20 +208,22 @@ namespace FilterStash.UI.Pages
         {
             var index = IndexService.ReadIndex();
             var package = index.Packages[name];
-            if (await SyncService.GetFilterPackageAsync(package.Name, package.Source) is Package update)
+            if (package.SourceIsGitHub)
             {
-                index.Packages[package.Name] = update;
-                await DownloadPackageFiles(package, force);
-                IndexService.SaveIndex(index);
-                index = IndexService.ReadIndex();
+                if (await SyncService.GetFilterPackageAsync(package.Name, package.Source) is Package update)
+                {
+                    index.Packages[package.Name] = update;
+                    await DownloadPackageFiles(package, force);
+                    IndexService.SaveIndex(index);
+                    index = IndexService.ReadIndex();
+                }
+                
+                if(name == index.CurrentlyInstalledPackage)
+                    await InstallPackage(name);
             }
-
-            if(name == index.CurrentlyInstalledPackage)
-                await InstallPackage(name);
-
+            
             await ReloadPackages();
         }
-
 
         async Task DeletePackage(string name)
         {
@@ -277,12 +293,11 @@ namespace FilterStash.UI.Pages
                 }
             }
         }
-
         async Task<List<string>> HandleCheckForUpdates()
         {
             var index = IndexService.ReadIndex();
             List<string> updateAvailable = [];
-            foreach (var package in index.Packages.Values)
+            foreach (var package in index.Packages.Values.Where(p => p.SourceIsGitHub))
             {
                 var p = await SyncService.GetFilterPackageAsync(package.Name, package.Source);
                 if (string.IsNullOrWhiteSpace(package.LastCommitSha)

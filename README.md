@@ -17,6 +17,9 @@ A separate MAUI shell is available, but is rather larger than the WinForms shell
 
 ## Changelog 
  
+### v0.1.5 2025-01-05
+added support for installing from zip files
+
 ### v0.1.4 2025-01-04
 initial prototype release 
 
