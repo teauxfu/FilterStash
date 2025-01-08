@@ -15,8 +15,8 @@ namespace FilterStash
         public string Name { get; init; } = name;
         public string Source { get; init; } = source;
 
-        public bool SourceIsGitHub => Source.Contains("https://github.com", StringComparison.OrdinalIgnoreCase)
-                || Source.Contains("https://github.com", StringComparison.OrdinalIgnoreCase);
+        public bool SourceIsGitHub => Source.StartsWith("https://github.com", StringComparison.OrdinalIgnoreCase)
+                || Source.StartsWith("https://github.com", StringComparison.OrdinalIgnoreCase);
         public bool SourceIsLocal => Source.EndsWith(".zip", StringComparison.OrdinalIgnoreCase) && File.Exists(Source);
 
         public string? ReadMeHtml { get; set; }

@@ -137,11 +137,11 @@ namespace FilterStash.UI.Pages
 
         private async Task UninstallPackage(string name)
         {
-            // TODO open the poe2 folder and delete any files with the same name as files in the given package's cache folder
             string packageDir = Path.Combine(Utils.DefaultCachePath, name);
             if (!Directory.Exists(packageDir))
                 throw new DirectoryNotFoundException($"The given package directory [{packageDir}] could not be found");
 
+            // CONSIDER iterating over index.Packages[name].Items.Select(i => i.Name) instead
             foreach (var file in Directory.EnumerateFiles(packageDir))
             {
                 string fileName = Path.GetFileName(file);
@@ -155,6 +155,7 @@ namespace FilterStash.UI.Pages
             IndexService.SaveIndex(index);
 
             // HACK move this to a separete service dedicated to updating the ini file
+            // NOTE there's a couple calls in kernel32.dll you can use to interact with this without rewriting the file, or pull in a library
             string poeini = Path.Combine(Utils.DefaultFiltersPath, "poe2_production_Config.ini");
             if (File.Exists(poeini))
             {
@@ -174,7 +175,7 @@ namespace FilterStash.UI.Pages
                     Log.LogError(ex, "An error occurred while uninstalling a package");
                 }
                 {
-
+                    // TODO show an alert or something?
                 }
             }
 
