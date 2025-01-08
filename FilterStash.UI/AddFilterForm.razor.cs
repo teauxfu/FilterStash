@@ -49,11 +49,16 @@ namespace FilterStash.UI
                     }
                     else
                     {
-                        validationMessageStore.Add(new FieldIdentifier(editModel, nameof(editModel.Source)), "The given source was invalid");
                     }
                 }
                 else if (editModel.FileAttachment is not null)
                 {
+
+                    if(!Path.GetExtension(editModel.FileAttachment.Name).Equals(".zip", StringComparison.OrdinalIgnoreCase))
+                    {
+                        validationMessageStore.Add(new FieldIdentifier(editModel, nameof(editModel.FileAttachment)), "You must select a .zip file to import from");
+                    }
+
                     // check if zip contains a filter file
                     //using var archive = ZipFile.OpenRead(editModel.Source);
                     //bool filterFileMissing = !archive.Entries.Where(e => e.FullName.EndsWith(".filter", StringComparison.OrdinalIgnoreCase)).Any();
@@ -61,6 +66,10 @@ namespace FilterStash.UI
                     //    validationMessageStore.Add(new FieldIdentifier(editModel, nameof(editModel.Source)), "The given source was invalid. It looks like this zip file exists, but doesn't contain a .filter file. Did you paste the right path?");
                     //else
                     //    _warning = null;
+                }
+                else
+                {
+                    validationMessageStore.Add(new FieldIdentifier(editModel, nameof(editModel.Source)), "Please provide a valid GitHub repo, or a zip file.");
                 }
             }
         }
@@ -70,11 +79,16 @@ namespace FilterStash.UI
         void HandleFileChange(InputFileChangeEventArgs e)
         {
             editModel.FileAttachment = e.File;
+            EditContext.NotifyFieldChanged(new FieldIdentifier(editModel, nameof(editModel.FileAttachment)));
         }
 
 
         void HandleClearForm()
-            => editModel.Source = editModel.Name = string.Empty;
+        {
+            editModel.Name = editModel.Source = string.Empty;
+            editModel.FileAttachment = null;
+            EditContext.NotifyValidationStateChanged();
+        }
 
         private class PackageEditModel
         {

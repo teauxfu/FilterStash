@@ -4,25 +4,32 @@
 
 <style>
     form {
-    border: 1px solid grey;
-    border-radius: .5rem;
+        border: 1px solid grey;
+        border-radius: .5rem;
+        padding-inline: 15px;
     }
 
     .form-inputs {
-    display: flex;
-    flex-direction: column;
-    gap: 3px;
+        display: flex;
+        flex-direction: column;
+        gap: 3px;
     }
 
-    .form-inputs label {
-    display: flex;
-    flex-direction: column;
-    }
+        .form-inputs label {
+            display: flex;
+            flex-direction: column;
+        }
 
     .form-buttons {
-    display: flex;
-    gap: 3px;
+        display: flex;
+        gap: 3px;
     }
+
+    .upload {
+        border: 5px dashed slategray;
+        padding: 25px;
+    }
+
 </style>
 
 <Acrylic BackgroundRgba="rgba(255,255,255,.3)">
@@ -40,15 +47,16 @@
                     Filter pack name:
                     <InputText @bind-Value=@editModel.Name placeholder="..." />
                 </label>
-                <div style="display: flex; flex-direction: row; gap: 3px;">
+                <div style="display: flex; flex-direction: row;  gap: 10px; justify-content: space-between;">
                     <label>
                         Filter pack source (only GitHub repos are supported currently):
                         <InputText @bind-Value=@editModel.Source placeholder="https://github.com/user/repo" />
                     </label>
                     <div>-- OR --</div>
-                    <label>
-                        Click here to install from a local zip file instead
-                        <InputFile  OnChange=@HandleFileChange/>
+                    <label style="flex-grow:1;">
+                        Add from a zip file by drag and dropping, or clicking here to select a file
+                        <InputFile OnChange=@HandleFileChange accept=".zip" class="upload" />
+                        <ValidationMessage For=@(() => editModel.FileAttachment) />
                     </label>
                 </div>
                 <p>@_dub</p>
