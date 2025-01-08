@@ -105,11 +105,15 @@ h1:focus {
     padding: 0 !important;
 }
 
+
 .button-column div {
     display: flex;
     justify-content: center;
 }
 
+    .button-column div button {
+        width: 100%;
+    }
 
 .ping-container {
     position: relative;

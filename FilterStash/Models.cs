@@ -12,12 +12,12 @@ namespace FilterStash
 
     public class Package(string name, string source)
     {
-        public string Name { get; init; } = name;
-        public string Source { get; init; } = source;
+        public string Name { get; set; } = name;
+        public string Source { get; set; } = source;
 
         public bool SourceIsGitHub => Source.StartsWith("https://github.com", StringComparison.OrdinalIgnoreCase)
                 || Source.StartsWith("https://github.com", StringComparison.OrdinalIgnoreCase);
-        public bool SourceIsLocal => Source.EndsWith(".zip", StringComparison.OrdinalIgnoreCase) && File.Exists(Source);
+        public bool SourceIsLocal => File.Exists(Source);
 
         public string? ReadMeHtml { get; set; }
         public string? B64Content { get; set; }

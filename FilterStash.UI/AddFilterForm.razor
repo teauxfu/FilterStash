@@ -44,20 +44,30 @@
             <DataAnnotationsValidator />
             <div class="form-inputs">
                 <label>
-                    Filter pack name:
+                    <span>
+                        Filter pack name:
+                    </span>
                     <InputText @bind-Value=@editModel.Name placeholder="..." />
                 </label>
                 <div style="display: flex; flex-direction: row;  gap: 10px; justify-content: space-between;">
-                    <label>
-                        Filter pack source (only GitHub repos are supported currently):
-                        <InputText @bind-Value=@editModel.Source placeholder="https://github.com/user/repo" />
-                    </label>
-                    <div>-- OR --</div>
-                    <label style="flex-grow:1;">
-                        Add from a zip file by drag and dropping, or clicking here to select a file
-                        <InputFile OnChange=@HandleFileChange accept=".zip" class="upload" />
-                        <ValidationMessage For=@(() => editModel.FileAttachment) />
-                    </label>
+                    <Acrylic FlexGrow=1 BackgroundRgba="rgba(255,255,255,.3)">
+                        <label>
+                            <span>
+                                Filter pack source (only GitHub repos are supported currently):
+                            </span>
+                            <InputText @bind-Value=@editModel.Source placeholder="https://github.com/user/repo" />
+                        </label>
+                    </Acrylic>
+                    <b style="margin-top: auto; margin-bottom: auto;">OR</b>
+                    <Acrylic FlexGrow=1 BackgroundRgba="rgba(255,255,255,.3)">
+                        <label style="flex-grow:1;">
+                            <span>
+                                Add from a <code>.zip</code> package or a single <code>.filter</code> file by drag and dropping, or clicking here to select a file
+                            </span>
+                            <InputFile OnChange=@HandleFileChange accept=".zip,.filter" class="upload" />
+                            <ValidationMessage For=@(() => editModel.FileAttachment) />
+                        </label>
+                    </Acrylic>
                 </div>
                 <p>@_dub</p>
             </div>

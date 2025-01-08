@@ -184,25 +184,29 @@ namespace FilterStash.UI.Pages
 
         async Task HandleAddPackage(Package package)
         {
-            var index = IndexService.ReadIndex();
-            index.Packages[package.Name] = package;
-
+            bool success = false;
             if (package.SourceIsGitHub)
             {
                 Log.LogInformation("GitHub package detected, attempting to download package files from source {source}", package.Source);
                 await DownloadPackageFiles(package);
+                success = true;
             }
             else if (package.SourceIsLocal)
             {
-                Log.LogInformation("Local zip package detected, attempting to extract package files from source {source}", package.Source);
-                string packageDir = Path.Combine(Utils.DefaultCachePath, package.Name);
-                Directory.CreateDirectory(packageDir);
-                ZipFile.ExtractToDirectory(package.Source, packageDir);
+                // this is handled inside the add filter form now...
+                // either all the handling should be up here (preferable, but more boilerplate)
+                // or it should all be in there (probably less clean, but quicker)
+                success = true;
             }
-
-            IndexService.SaveIndex(index);
-            showAddForm = false;
-            await ReloadPackages();
+            
+            if(success)
+            {
+                var index = IndexService.ReadIndex();
+                index.Packages[package.Name] = package;
+                IndexService.SaveIndex(index);
+                showAddForm = false;
+                await ReloadPackages();
+            }
         }
 
         async Task HandleUpdatePackage(string name, bool force = false)

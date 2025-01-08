@@ -9,6 +9,8 @@ This is a desktop utility for installing and managing PoE2 filter packages.
 ### v0.1.6 2025-01-07
 added better validation for the add filter form
 added better support for using drag-n-drop when adding zip files
+add support for adding just plain `.filter` files
+misc ui improvements
 
 ### v0.1.5 2025-01-05
 added support for installing from zip files

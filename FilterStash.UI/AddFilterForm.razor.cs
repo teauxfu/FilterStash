@@ -17,7 +17,7 @@ namespace FilterStash.UI
 
         // used to check if name in use, consider taking a list of current package names as a param instead
         [Inject] IIndexService IndexService { get; set; } = default!;
-        [Inject] ISyncService SyncService { get;set; } = default!;  
+        [Inject] ISyncService SyncService { get; set; } = default!;
 
         protected override void OnInitialized()
         {
@@ -53,11 +53,13 @@ namespace FilterStash.UI
                 }
                 else if (editModel.FileAttachment is not null)
                 {
+                    string[] allowedExtensions = [".zip", ".filter"];
 
-                    if(!Path.GetExtension(editModel.FileAttachment.Name).Equals(".zip", StringComparison.OrdinalIgnoreCase))
+                    if (!allowedExtensions.Contains(Path.GetExtension(editModel.FileAttachment.Name), StringComparer.OrdinalIgnoreCase))
                     {
-                        validationMessageStore.Add(new FieldIdentifier(editModel, nameof(editModel.FileAttachment)), "You must select a .zip file to import from");
+                        validationMessageStore.Add(new FieldIdentifier(editModel, nameof(editModel.FileAttachment)), "You must select a .filter or .zip file to import from");
                     }
+
 
                     // check if zip contains a filter file
                     //using var archive = ZipFile.OpenRead(editModel.Source);
@@ -111,32 +113,37 @@ namespace FilterStash.UI
 
             if (!p.SourceIsGitHub && editModel.FileAttachment is not null)
             {
+                // make sure there's a place in the cache for this incoming data
                 string cachePath = Path.Combine(Utils.DefaultCachePath, p.Name);
                 Directory.CreateDirectory(cachePath);
 
-                // Write the file to the cache
-                string zipFilePath = Path.Combine(cachePath, p.Name);
-                await using (var fileStream = new FileStream(zipFilePath, FileMode.Create, FileAccess.Write))
-                {
+                // copy the file to temp so we can work with a path
+                string temp = Path.GetTempFileName();
+                await using (var fileStream = new FileStream(temp, FileMode.Create, FileAccess.Write))
                     await editModel.FileAttachment.OpenReadStream().CopyToAsync(fileStream);
-                }
 
-                // Extract the zip file
-                ZipFile.ExtractToDirectory(zipFilePath, cachePath);
-
-                // Remove the zip file after extraction
-                File.Delete(zipFilePath);
-
-                // Check if the extracted files contain a folder with the same name and pull the children up a level
-                string extractedFolderPath = Path.Combine(cachePath, p.Name);
-                if (Directory.Exists(extractedFolderPath))
+                if (editModel.FileAttachment.Name.EndsWith(".filter", StringComparison.OrdinalIgnoreCase))
                 {
-                    foreach (var file in Directory.GetFiles(extractedFolderPath))
-                    {
-                        File.Move(file, Path.Combine(cachePath, Path.GetFileName(file)));
-                    }
-                    Directory.Delete(extractedFolderPath);
+                    string dst = Path.Combine(cachePath, editModel.FileAttachment.Name);
+                    File.Copy(temp, dst, overwrite: true);
+                    p.Source = dst;
                 }
+                else if (editModel.FileAttachment.Name.EndsWith(".zip", StringComparison.OrdinalIgnoreCase))
+                {
+                    ZipFile.ExtractToDirectory(temp, cachePath, overwriteFiles: true);
+                    // Check if the extracted files contain a folder with the same name and pull the children up a level
+                    string zipShellDir = Path.Combine(cachePath, Path.GetFileNameWithoutExtension(editModel.FileAttachment.Name));
+                    if (Directory.Exists(zipShellDir))
+                    {
+                        foreach (var file in Directory.GetFiles(zipShellDir))
+                            File.Move(file, Path.Combine(cachePath, Path.GetFileName(file)), overwrite: true);
+                        Directory.Delete(zipShellDir);
+                    }
+                    p.Source = Directory.EnumerateFiles(cachePath).FirstOrDefault(f => f.EndsWith(".filter", StringComparison.OrdinalIgnoreCase)) ?? 
+                        "unknown";
+                }
+
+                File.Delete(temp);
 
                 // Add the extracted files to the package items
                 p.Items = Directory.GetFiles(cachePath, "*.*", SearchOption.AllDirectories)

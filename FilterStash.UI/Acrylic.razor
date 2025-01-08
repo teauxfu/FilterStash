@@ -10,7 +10,10 @@
     //"rgba(0,0,0,.3)"
     [Parameter] public string BoxShadowRgba { get; set; } = "rgba(0,0,0,0)";
     [Parameter] public string BackgroundRgba { get; set; } = "rgba(255,255,255,.6)";
+    [Parameter] public int FlexGrow { get; set; }
+
+
 
     string _backdropFilter => $"blur({BlurPixels}px) saturate({SaturationPercent}%)";
-    string _style => $"display:inline-block; box-shadow: 0 1rem 2rem {BoxShadowRgba}; border-radius: {BorderRadius}; -webkit-backdrop-filter: {_backdropFilter}; backdrop-filter: {_backdropFilter}; background-color: {BackgroundRgba};";
+    string _style => $"display:inline-block; flex-grow: {FlexGrow}; box-shadow: 0 1rem 2rem {BoxShadowRgba}; border-radius: {BorderRadius}; -webkit-backdrop-filter: {_backdropFilter}; backdrop-filter: {_backdropFilter}; background-color: {BackgroundRgba}; padding: 2px;";
 }
