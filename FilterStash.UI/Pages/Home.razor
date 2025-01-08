@@ -69,6 +69,9 @@ else
                 Files from the source you provide will be downloaded to your computer, so only install packs from a trusted source.
                 To help reduce risk, only the following file types will be synced: <code>@(string.Join(", ", allowedExtensions))</code>.
             </p>
+            <p>
+                Whether installing from a zip file or a GitHub repo, the expected "package structure" is just a <code>.filter</code> file and optionally some <code>.md, .txt, .mp3, .wav</code> files.
+            </p>
             <DisplayPackagesGrid Packages=@_displayPackages 
                 CurrentPackageName=@_currentPackage?.Name 
                 OnViewPackage=@HandleViewPackage
