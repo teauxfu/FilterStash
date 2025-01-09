@@ -1,5 +1,6 @@
 <Project>
   <PropertyGroup>
     <Version>0.1.7</Version>
+    <PathMap>$(MSBuildProjectDirectory)=$(MSBuildProjectName)</PathMap>
   </PropertyGroup>
 </Project>
